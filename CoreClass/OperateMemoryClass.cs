@@ -7,6 +7,11 @@ using System.Web;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Primitives;
 
 namespace CoreClass
 {
@@ -15,6 +20,8 @@ namespace CoreClass
 	/// </summary>
 	public class OperateMemoryClass
 	{
+		public string m_webrootpath = HttpContext.HostingEnvironment.WebRootPath;
+
 		/*
 		============邮件操作模块============
 		*/
@@ -127,41 +134,8 @@ namespace CoreClass
 			get
 			{
 				string result = String.Empty;
-				result = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-				if (result != null && result != String.Empty)
-				{
-					//可能有代理
-					if (result.IndexOf(".") == -1) //没有"."肯定是非IPv4格式
-						result = null;
-					else
-					{
-						if (result.IndexOf(",") != -1)
-						{
-							//有","，估计多个代理。取第一个不是内网的IP。
-							result = result.Replace(" ", "").Replace(",", "");
-							string[] temparyip = result.Split(",;".ToCharArray());
-							for (int i = 0; i < temparyip.Length; i++)
-							{
-								if (IsIPAddress(temparyip[i])
-									&& temparyip[i].Substring(0, 3) != "10."
-									&& temparyip[i].Substring(0, 7) != "192.168"
-									&& temparyip[i].Substring(0, 7) != "172.16.")
-								{
-									return temparyip[i]; //找到不是内网的地址
-								}
-							}
-						}
-						else if (IsIPAddress(result)) //代理即是IP格式
-							return result;
-						else
-							result = null; //代理中的内容 非IP，取IP
-					}
-				}
-				string IpAddress = (HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"] != null && HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"] != String.Empty) ? HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"] : HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
-				if (null == result || result == String.Empty)
-					result = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
-				if (result == null || result == String.Empty)
-					result = HttpContext.Current.Request.UserHostAddress;
+				result = HttpContext.Current.Connection.RemoteIpAddress.ToString();
+				
 				return result;
 			}
 		}
@@ -181,7 +155,7 @@ namespace CoreClass
 		============缓存操作模块============
 		*/
 		/// <summary>
-		/// 创建缓存
+		/// 设置缓存
 		/// </summary>
 		/// <param name="key">键</param>
 		/// <param name="obj">值</param>
@@ -191,53 +165,33 @@ namespace CoreClass
 			bool b = false;
 			try
 			{
-				if (HttpContext.Current.Cache[key] == null)
-				{
-					HttpContext.Current.Cache.Add(key, obj, null, Cache.NoAbsoluteExpiration, TimeSpan.Zero, CacheItemPriority.Normal, null);
-					b = true;
-				}
+				HttpContext.Cache.Set(key, obj, TimeSpan.Zero);
+				b = true;
 			}
 			catch (Exception e) { throw e; }
 			return b;
 		}
 		/// <summary>
-		/// 创建缓存
+		/// 设置缓存
 		/// </summary>
 		/// <param name="key">键</param>
 		/// <param name="obj">值</param>
-		/// <param name="cachedependency">文件依赖项</param>
+		/// <param name="path">依赖文件路径(格式：a/b/a.txt)</param>
 		/// <returns>布尔</returns>
-		public bool SetCache(string key, object obj, CacheDependency cachedependency)
+		public bool SetCache(string key, object obj, string path)
 		{
 			bool b = false;
 			try
 			{
-				if (HttpContext.Current.Cache[key] == null)
-				{
-					HttpContext.Current.Cache.Add(key, obj, cachedependency, Cache.NoAbsoluteExpiration, TimeSpan.Zero, CacheItemPriority.Normal, null);
-					b = true;
-				}
-			}
-			catch (Exception e) { throw e; }
-			return b;
-		}
-		/// <summary>
-		/// 创建缓存
-		/// </summary>
-		/// <param name="key">键</param>
-		/// <param name="obj">值</param>
-		/// <param name="sqlcachedependency">数据库依赖项</param>
-		/// <returns>布尔</returns>
-		public bool SetCache(string key, object obj, SqlCacheDependency sqlcachedependency)
-		{
-			bool b = false;
-			try
-			{
-				if (HttpContext.Current.Cache[key] == null)
-				{
-					HttpContext.Current.Cache.Add(key, obj, sqlcachedependency, Cache.NoAbsoluteExpiration, TimeSpan.Zero, CacheItemPriority.Normal, null);
-					b = true;
-				}
+				path = Path.Combine(m_webrootpath, path);
+
+				IFileProvider _fileProvider = HttpContext.HostingEnvironment.ContentRootFileProvider;
+				IChangeToken changeToken = _fileProvider.Watch(path);
+				MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions()
+					.SetSlidingExpiration(TimeSpan.FromMinutes(5))
+					.AddExpirationToken(changeToken);
+				HttpContext.Cache.Set(key, obj, cacheEntryOptions);
+				b = true;
 			}
 			catch (Exception e) { throw e; }
 			return b;
@@ -249,7 +203,9 @@ namespace CoreClass
 		/// <returns>对象</returns>
 		public object GetCache(string key)
 		{
-			return HttpContext.Current.Cache.Get(key);
+			object result = null;
+			HttpContext.Cache.TryGetValue(key, out result);
+			return result;
 		}
 		/// <summary>
 		/// 移除缓存
@@ -261,49 +217,8 @@ namespace CoreClass
 			bool b = false;
 			try
 			{
-				HttpContext.Current.Cache.Remove(key);
+				HttpContext.Cache.Remove(key);
 				b = true;
-			}
-			catch (Exception e) { throw e; }
-			return b;
-		}
-		/// <summary>
-		/// 修改缓存项
-		/// </summary>
-		/// <param name="key">键</param>
-		/// <param name="obj">值</param>
-		/// <returns>布尔</returns>
-		public bool EditCache(string key, object obj)
-		{
-			bool b = false;
-			try
-			{
-				if (HttpContext.Current.Cache[key] != null)
-				{
-					HttpContext.Current.Cache.Insert(key, obj);
-					b = true;
-				}
-			}
-			catch (Exception e) { throw e; }
-			return b;
-		}
-		/// <summary>
-		/// 修改缓存项
-		/// </summary>
-		/// <param name="key">键</param>
-		/// <param name="obj">值</param>
-		/// <param name="cachedependency">依赖项</param>
-		/// <returns>布尔</returns>
-		public bool EditCache(string key, object obj, CacheDependency cachedependency)
-		{
-			bool b = false;
-			try
-			{
-				if (HttpContext.Current.Cache[key] != null)
-				{
-					HttpContext.Current.Cache.Insert(key, obj, cachedependency);
-					b = true;
-				}
 			}
 			catch (Exception e) { throw e; }
 			return b;
@@ -318,38 +233,19 @@ namespace CoreClass
 		/// <param name="value">值</param>
 		/// <param name="domain">域名</param>
 		/// <returns>布尔</returns>
-		public bool SetCookie(string name, string value, string domain)
+		public bool SetCookie(string key, string value, string domain)
 		{
 			bool b = false;
 			try
 			{
-				HttpCookie cookie = new HttpCookie(name);
-				
-				//cookie已存在
-				if (HttpContext.Current.Request.Cookies[name] != null)
+				CookieOptions co = new CookieOptions();
+				//判断是否指定domain
+				if (domain != null)
 				{
-					cookie = HttpContext.Current.Request.Cookies[name];
-					//判断是否指定domain
-					if (domain != null)
-					{
-						cookie.Domain = domain;
-					}
-					cookie.Value = value;
-					//修改
-					HttpContext.Current.Response.SetCookie(cookie);
+					co.Domain = domain;
 				}
-				//cookie不存在
-				else
-				{
-					//判断是否指定domain
-					if (domain != null)
-					{
-						cookie.Domain = domain;
-					}
-					cookie.Value = value;
-					//添加
-					HttpContext.Current.Response.AppendCookie(cookie);
-				}
+				//设置
+				HttpContext.Current.Response.Cookies.Append(key, value, co);
 				b = true;
 			}
 			catch (Exception e) { throw e; }
@@ -358,7 +254,7 @@ namespace CoreClass
 		/// <summary>
 		/// 添加或修改cookie
 		/// </summary>
-		/// <param name="name">名称</param>
+		/// <param name="key">名称</param>
 		/// <param name="value">值</param>
 		/// <param name="days">日</param>
 		/// <param name="hours">时</param>
@@ -366,41 +262,23 @@ namespace CoreClass
 		/// <param name="second">秒</param>
 		/// <param name="domain">域名</param>
 		/// <returns>布尔</returns>
-		public bool SetCookie(string name, string value, int days, int hours, int minutes, int second, string domain)
+		public bool SetCookie(string key, string value, int days, int hours, int minutes, int second, string domain)
 		{
 			bool b = false;
 			try
 			{
-				HttpCookie cookie = new HttpCookie(name);
 				TimeSpan ts = new TimeSpan(days, hours, minutes, second);
+
+				CookieOptions co = new CookieOptions();
+				co.Expires = DateTime.Now.Add(ts);
+				//判断是否指定domain
+				if (domain != null)
+				{
+					co.Domain = domain;
+				}
+				//修改
+				HttpContext.Current.Response.Cookies.Append(key, value, co);
 				
-				//cookie已存在
-				if (HttpContext.Current.Request.Cookies[name] != null)
-				{
-					cookie = HttpContext.Current.Request.Cookies[name];
-					cookie.Expires = DateTime.Now.Add(ts);
-					//判断是否指定domain
-					if (domain != null)
-					{
-						cookie.Domain = domain;
-					}
-					cookie.Value = value;
-					//修改
-					HttpContext.Current.Response.SetCookie(cookie);
-				}
-				//cookie不存在
-				else
-				{
-					cookie.Expires = DateTime.Now.Add(ts);
-					//判断是否指定domain
-					if (domain != null)
-					{
-						cookie.Domain = domain;
-					}
-					cookie.Value = value;
-					//添加
-					HttpContext.Current.Response.AppendCookie(cookie);
-				}
 				b = true;
 			}
 			catch (Exception e) { throw e; }
@@ -416,7 +294,7 @@ namespace CoreClass
 			string cookie = null;
 			try
 			{
-				cookie = HttpContext.Current.Request.Cookies[name].Value;
+				cookie = HttpContext.Current.Request.Cookies[name];
 			}
 			catch { }
 			return cookie;
@@ -432,263 +310,16 @@ namespace CoreClass
 			bool b = false;
 			if (HttpContext.Current.Request.Cookies[name] != null)
 			{
-				HttpCookie cookie = HttpContext.Current.Request.Cookies[name];
-				cookie.Expires = DateTime.Now.AddDays(-1);
+				CookieOptions co = new CookieOptions();
 				//判断是否指定domain
 				if (domain != null)
 				{
-					cookie.Domain = domain;
+					co.Domain = domain;
 				}
-				HttpContext.Current.Response.Cookies.Set(cookie);
+				HttpContext.Current.Response.Cookies.Delete(name, co);
 				b = true;
 			}
 			return b;
-		}
-		/// <summary>
-		/// 添加或修改cookie，键值对的数量必须相同
-		/// </summary>
-		/// <param name="name">名称</param>
-		/// <param name="key">键</param>
-		/// <param name="value">值</param>
-		/// <param name="domain">域名</param>
-		/// <returns>布尔</returns>
-		public bool SetCookie(string name, string[] key, string[] value, string domain)
-		{
-			bool b = false;
-			try
-			{
-				HttpCookie cookie = new HttpCookie(name);
-
-				//cookie已存在
-				if (HttpContext.Current.Request.Cookies[name] != null)
-				{
-					cookie = HttpContext.Current.Request.Cookies[name];
-					//判断是否指定domain
-					if (domain != null)
-					{
-						cookie.Domain = domain;
-					}
-					for (int i = 0; i < key.Length; i++)
-					{
-						cookie.Values[key[i]] = value[i];
-					}
-					//修改
-					HttpContext.Current.Response.SetCookie(cookie);
-				}
-				//cookie不存在
-				else
-				{
-					//判断是否指定domain
-					if (domain != null)
-					{
-						cookie.Domain = domain;
-					}
-					for (int i = 0; i < key.Length; i++)
-					{
-						cookie.Values[key[i]] = value[i];
-					}
-					//添加
-					HttpContext.Current.Response.AppendCookie(cookie);
-				}
-				b = true;
-			}
-			catch (Exception e) { throw e; }
-			return b;
-		}
-		/// <summary>
-		/// 添加或修改cookie，键值对的数量必须相同
-		/// </summary>
-		/// <param name="name">名称</param>
-		/// <param name="key">键</param>
-		/// <param name="value">值</param>
-		/// <param name="days">日</param>
-		/// <param name="hours">时</param>
-		/// <param name="minutes">分</param>
-		/// <param name="second">秒</param>
-		/// <param name="domain">域名</param>
-		/// <returns>布尔</returns>
-		public bool SetCookie(string name, string[] key, string[] value, int days, int hours, int minutes, int second, string domain)
-		{
-			bool b = false;
-			try
-			{
-				HttpCookie cookie = new HttpCookie(name);
-				TimeSpan ts = new TimeSpan(days, hours, minutes, second);
-
-				//cookie已存在
-				if (HttpContext.Current.Request.Cookies[name] != null)
-				{
-					cookie = HttpContext.Current.Request.Cookies[name];
-					cookie.Expires = DateTime.Now.Add(ts);
-					//判断是否指定domain
-					if (domain != null)
-					{
-						cookie.Domain = domain;
-					}
-					for (int i = 0; i < key.Length; i++)
-					{
-						cookie.Values[key[i]] = value[i];
-					}
-					//修改
-					HttpContext.Current.Response.SetCookie(cookie);
-				}
-				//cookie不存在
-				else
-				{
-					cookie.Expires = DateTime.Now.Add(ts);
-					//判断是否指定domain
-					if (domain != null)
-					{
-						cookie.Domain = domain;
-					}
-					for (int i = 0; i < key.Length; i++)
-					{
-						cookie.Values[key[i]] = value[i];
-					}
-					//添加
-					HttpContext.Current.Response.AppendCookie(cookie);
-				}
-				b = true;
-			}
-			catch (Exception e) { throw e; }
-			return b;
-		}
-		/// <summary>
-		/// 获取cookie值
-		/// </summary>
-		/// <param name="name">名称</param>
-		/// <param name="key">键</param>
-		/// <returns>cookie值</returns>
-		public string GetCookieKey(string name, string key)
-		{
-			string cookie = null;
-			try
-			{
-				cookie = HttpContext.Current.Request.Cookies[name].Values[key];
-			}
-			catch { }
-			return cookie;
-		}
-		/// <summary>
-		/// 移除cookie
-		/// </summary>
-		/// <param name="name">名称</param>
-		/// <param name="key">键</param>
-		/// <param name="domain">域名</param>
-		/// <returns>布尔</returns>
-		public bool RemoveCookieKey(string name, string key, string domain)
-		{
-			bool b = false;
-			if (HttpContext.Current.Request.Cookies[name] != null)
-			{
-				HttpCookie cookie = HttpContext.Current.Request.Cookies[name];
-				//判断是否指定domain
-				if (domain != null)
-				{
-					cookie.Domain = domain;
-				}
-				cookie.Values.Remove(key);
-				b = true;
-			}
-			return b;
-		}
-		/// <summary>
-		/// 将Net.CookieCollection转换成Web.HttpCookieCollection
-		/// </summary>
-		/// <param name="cookie">Net.CookieCollection</param>
-		/// <returns></returns>
-		public HttpCookieCollection NetCookieToHttpCookie(CookieCollection cookie)
-		{
-			HttpCookieCollection list = new HttpCookieCollection();
-			try
-			{
-				foreach (Cookie c in cookie)
-				{
-					HttpCookie hc = new HttpCookie(c.Name, c.Value);
-					try
-					{
-						hc.Domain = c.Domain;
-					}
-					catch { }
-					list.Add(hc);
-				}
-			}
-			catch (Exception ex) { throw ex; }
-			return list;
-		}
-		/// <summary>
-		/// 将Net.CookieCollection转换成Web.HttpCookieCollection
-		/// </summary>
-		/// <param name="cookie">Net.CookieCollection</param>
-		/// <param name="domain">域</param>
-		/// <returns></returns>
-		public HttpCookieCollection NetCookieToHttpCookie(CookieCollection cookie, string domain)
-		{
-			HttpCookieCollection list = new HttpCookieCollection();
-			try
-			{
-				foreach (Cookie c in cookie)
-				{
-					HttpCookie hc = new HttpCookie(c.Name, c.Value);
-					try
-					{
-						hc.Domain = domain;
-					}
-					catch { }
-					list.Add(hc);
-				}
-			}
-			catch (Exception ex) { throw ex; }
-			return list;
-		}
-		/// <summary>
-		/// 将Web.HttpCookieCollection转换成Net.CookieCollection
-		/// </summary>
-		/// <param name="cookie">Web.HttpCookieCollection</param>
-		/// <returns></returns>
-		public CookieCollection HttpCookieToNetCookie(HttpCookieCollection cookie)
-		{
-			CookieCollection list = new CookieCollection();
-			try
-			{
-				for (int i = 0; i < cookie.Count; i++)
-				{
-					Cookie hc = new Cookie(cookie[i].Name, cookie[i].Value);
-					try
-					{
-						hc.Domain = cookie[0].Domain;
-					}
-					catch { }
-					list.Add(hc);
-				}
-			}
-			catch (Exception ex) { throw ex; }
-			return list;
-		}
-		/// <summary>
-		/// 将Web.HttpCookieCollection转换成Net.CookieCollection
-		/// </summary>
-		/// <param name="cookie">Web.HttpCookieCollection</param>
-		/// <param name="domain">域</param>
-		/// <returns></returns>
-		public CookieCollection HttpCookieToNetCookie(HttpCookieCollection cookie, string domain)
-		{
-			CookieCollection list = new CookieCollection();
-			try
-			{
-				for (int i = 0; i < cookie.Count; i++)
-				{
-					Cookie hc = new Cookie(cookie[i].Name, cookie[i].Value);
-					try
-					{
-						hc.Domain = domain;
-					}
-					catch { }
-					list.Add(hc);
-				}
-			}
-			catch (Exception ex) { throw ex; }
-			return list;
 		}
 		/*
 		============session操作模块============
@@ -699,31 +330,20 @@ namespace CoreClass
         /// <returns>布尔</returns>
         public string GetSessionID()
         {
-            return HttpContext.Current.Session.SessionID;
+            return HttpContext.Current.Session.Id;
         }
 		/// <summary>
 		/// 添加或修改session
 		/// </summary>
 		/// <param name="name">名称</param>
 		/// <param name="value">值</param>
-		/// <param name="sessiontimeout">过期时间(分钟)</param>
 		/// <returns>布尔</returns>
-		public bool SetSession(string name, string value, int sessiontimeout)
+		public bool SetSession(string key, string value)
 		{
 			bool b = false;
 			try
 			{
-				HttpContext.Current.Session.Timeout = sessiontimeout;
-				//cookie已存在
-				if (HttpContext.Current.Session[name] != null)
-				{
-					HttpContext.Current.Session[name] = value;
-				}
-				//cookie不存在
-				else
-				{
-					HttpContext.Current.Session.Add(name, value);
-				}
+				HttpContext.Current.Session.SetString(key, value);
 				b = true;
 			}
 			catch (Exception e) { throw e; }
@@ -734,12 +354,12 @@ namespace CoreClass
 		/// </summary>
 		/// <param name="name">名称</param>
 		/// <returns>session值</returns>
-		public string GetSession(string name)
+		public string GetSession(string key)
 		{
 			string session = null;
 			try
 			{
-				session = HttpContext.Current.Session[name].ToString();
+				session = HttpContext.Current.Session.GetString(key);
 			}
 			catch { }
 			return session;
@@ -752,67 +372,36 @@ namespace CoreClass
 		public bool RemoveSession(string name)
 		{
 			bool b = false;
-			if (HttpContext.Current.Session[name] != null)
-			{
-				HttpContext.Current.Session.Remove(name);
-				b = true;
-			}
+			HttpContext.Current.Session.Remove(name);
+			b = true;
 			return b;
 		}
 		/*
 		============application操作模块============
 		*/
+		/*
 		/// <summary>
 		/// 添加或修改application
 		/// </summary>
 		/// <param name="name">名称</param>
 		/// <param name="value">值</param>
 		/// <returns>布尔</returns>
-		public bool SetApplication(string name, object value)
+		public bool SetApplication(string key, object value)
 		{
 			bool b = false;
 			try
 			{
-				HttpApplicationState appState = HttpContext.Current.Application;
-				object app = appState.Get(name);
+				object result = null;
+				HttpContext.TempData.TryGetValue(key, out result);
 				//application已存在
-				if (app != null)
+				if (result != null)
 				{
-					appState.Set(name, value);
+					HttpContext.TempData[key] = value;
 				}
 				//application不存在
 				else
 				{
-					appState.Add(name, value);
-				}
-				b = true;
-			}
-			catch (Exception e) { throw e; }
-			return b;
-		}
-		/// <summary>
-		/// 添加或修改application
-		/// </summary>
-		/// <param name="name">名称</param>
-		/// <param name="value">值</param>
-		/// <param name="hc">外部传入的HttpContext</param>
-		/// <returns>布尔</returns>
-		public bool SetApplication(string name, object value, ref HttpContext hc)
-		{
-			bool b = false;
-			try
-			{
-				HttpApplicationState appState = hc.Application;
-				object app = appState.Get(name);
-				//application已存在
-				if (app != null)
-				{
-					appState.Set(name, value);
-				}
-				//application不存在
-				else
-				{
-					appState.Add(name, value);
+					HttpContext.TempData.Add(key, value);
 				}
 				b = true;
 			}
@@ -824,30 +413,12 @@ namespace CoreClass
 		/// </summary>
 		/// <param name="name">名称</param>
 		/// <returns>application值</returns>
-		public object GetApplication(string name)
+		public object GetApplication(string key)
 		{
-			HttpApplicationState appState = HttpContext.Current.Application;
 			object app = null;
 			try
 			{
-				app = appState.Get(name);
-			}
-			catch { }
-			return app;
-		}
-		/// <summary>
-		/// 获取application值
-		/// </summary>
-		/// <param name="name">名称</param>
-		/// <param name="hc">外部传入的HttpContext</param>
-		/// <returns>application值</returns>
-		public object GetApplication(string name, ref HttpContext hc)
-		{
-			HttpApplicationState appState = hc.Application;
-			object app = null;
-			try
-			{
-				app = appState.Get(name);
+				app = HttpContext.TempData[key];
 			}
 			catch { }
 			return app;
@@ -860,31 +431,11 @@ namespace CoreClass
 		public bool RemoveApplication(string name)
 		{
 			bool b = false;
-			HttpApplicationState appState = HttpContext.Current.Application;
-			if (appState.Get(name) != null)
-			{
-				appState.Remove(name);
-				b = true;
-			}
+			HttpContext.TempData.Remove(name);
+			b = true;
 			return b;
 		}
-		/// <summary>
-		/// 移除application
-		/// </summary>
-		/// <param name="name">名称</param>
-		/// <param name="hc">外部传入的HttpContext</param>
-		/// <returns>布尔</returns>
-		public bool RemoveApplication(string name, ref HttpContext hc)
-		{
-			bool b = false;
-			HttpApplicationState appState = hc.Application;
-			if (appState.Get(name) != null)
-			{
-				appState.Remove(name);
-				b = true;
-			}
-			return b;
-		}
+		*/
 		/*
 		============跨域操作模块============
 		*/
@@ -898,11 +449,11 @@ namespace CoreClass
 		public string CDA(string url, string[] action, string domain)
 		{
 			CookieContainer craboCookie = new CookieContainer();
-			HttpCookieCollection hcc = HttpContext.Current.Request.Cookies;
+			IRequestCookieCollection hcc = HttpContext.Current.Request.Cookies;
 			CookieCollection ncc = new CookieCollection();
-			for (int i = 0; i < hcc.Count; i++)
+			foreach (var item in hcc)
 			{
-				Cookie c = new Cookie(hcc[i].Name, hcc[i].Value);
+				Cookie c = new Cookie(item.Key, item.Value);
 				if (domain != null)
 				{
 					c.Domain = domain;

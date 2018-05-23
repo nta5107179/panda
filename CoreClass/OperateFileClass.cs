@@ -15,6 +15,8 @@ using System.Data;
 using NPOI.HSSF.UserModel;
 using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 
 namespace CoreClass
 {
@@ -23,6 +25,8 @@ namespace CoreClass
 	/// </summary>
 	public class OperateFileClass
 	{
+		public string m_webrootpath = HttpContext.HostingEnvironment.WebRootPath;
+
 		/// <summary>
 		/// 获取一个绝对不重复的文件名
 		/// </summary>
@@ -38,10 +42,10 @@ namespace CoreClass
         /// </summary>
         /// <param name="imgFile">文件对象</param>
         /// <param name="dirPath">目标位置(格式：a/b/)</param>
-        /// <param name="filetype">允许的上传类型("|"分隔)</param>
-        /// <param name="uploadsize">最大允许上传量(字节 B)</param>
+        /// <param name="filetype">允许的上传类型("|"分隔)，null为不限</param>
+        /// <param name="uploadsize">最大允许上传量(字节 B)，0为不限</param>
         /// <returns>文件名</returns>
-        public string UploadFile(HttpPostedFile imgFile, string dirPath, string filetype, long uploadsize)
+        public string UploadFile(IFormFile imgFile, string dirPath, string filetype, long uploadsize)
         {
             //定义允许上传的文件扩展名
             string FILE_TYPE = filetype;
@@ -51,19 +55,18 @@ namespace CoreClass
             {
                 throw new Exception("未选择文件。");
             }
-            string rootPath = HttpContext.Current.Server.MapPath("~/" + dirPath);
+			string rootPath = Path.Combine(m_webrootpath, dirPath);
             if (!Directory.Exists(rootPath))
             {
                 Directory.CreateDirectory(rootPath);
             }
             string fileName = imgFile.FileName;
             string fileExt = Path.GetExtension(fileName).ToLower();
-            ArrayList fileTypeList = ArrayList.Adapter(FILE_TYPE.Split('|'));
-            if (imgFile.InputStream == null || imgFile.InputStream.Length > MAX_SIZE)
+			if (imgFile == null || (MAX_SIZE != 0 && imgFile.Length > MAX_SIZE))
             {
                 throw new Exception("上传文件大小超过限制。");
             }
-            if (string.IsNullOrEmpty(fileExt) || Array.IndexOf(FILE_TYPE.Split('|'), fileExt.Substring(1).ToLower()) == -1)
+            if (string.IsNullOrEmpty(fileExt) || (FILE_TYPE != null && Array.IndexOf(FILE_TYPE.Split('|'), fileExt.Substring(1).ToLower()) == -1))
             {
                 throw new Exception("上传文件格式被禁止。");
             }
@@ -78,7 +81,10 @@ namespace CoreClass
                     newFileName = g_FileSaveName + fileExt;
                     filePath = rootPath + newFileName;
                 }
-                imgFile.SaveAs(filePath);
+				using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+				{
+					imgFile.CopyTo(fileStream);
+				}
             }
             catch
             {
@@ -92,10 +98,10 @@ namespace CoreClass
         /// <param name="imgFile">文件对象</param>
         /// <param name="remoteAddress">远程地址(格式：//192.168.1.1/)</param>
         /// <param name="dirPath">目标位置(格式：a/b/)</param>
-        /// <param name="filetype">允许的上传类型("|"分隔)</param>
-        /// <param name="uploadsize">最大允许上传量(字节 B)</param>
+        /// <param name="filetype">允许的上传类型("|"分隔)，null为不限</param>
+        /// <param name="uploadsize">最大允许上传量(字节 B)，0为不限</param>
         /// <returns>文件名</returns>
-        public string UploadFile(HttpPostedFile imgFile, string remoteAddress, string dirPath, string filetype, long uploadsize)
+        public string UploadFile(IFormFile imgFile, string remoteAddress, string dirPath, string filetype, long uploadsize)
         {
             //定义允许上传的文件扩展名
             string FILE_TYPE = filetype;
@@ -112,12 +118,11 @@ namespace CoreClass
             }
             string fileName = imgFile.FileName;
             string fileExt = Path.GetExtension(fileName).ToLower();
-            ArrayList fileTypeList = ArrayList.Adapter(FILE_TYPE.Split('|'));
-            if (imgFile.InputStream == null || imgFile.InputStream.Length > MAX_SIZE)
+            if (imgFile == null || (MAX_SIZE != 0 && imgFile.Length > MAX_SIZE))
             {
                 throw new Exception("上传文件大小超过限制。");
             }
-            if (string.IsNullOrEmpty(fileExt) || Array.IndexOf(FILE_TYPE.Split('|'), fileExt.Substring(1).ToLower()) == -1)
+            if (string.IsNullOrEmpty(fileExt) || (FILE_TYPE != null && Array.IndexOf(FILE_TYPE.Split('|'), fileExt.Substring(1).ToLower()) == -1))
             {
                 throw new Exception("上传文件格式被禁止。");
             }
@@ -132,7 +137,10 @@ namespace CoreClass
                     newFileName = g_FileSaveName + fileExt;
                     filePath = rootPath + newFileName;
                 }
-                imgFile.SaveAs(filePath);
+				using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+				{
+					imgFile.CopyTo(fileStream);
+				}
             }
             catch
             {
@@ -165,8 +173,8 @@ namespace CoreClass
                 else
                 {
                     fileExt = g_FileSaveName + fileExt;
-                }
-                path = HttpContext.Current.Server.MapPath("~/") + path;
+				}
+				path = Path.Combine(m_webrootpath, path);
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
@@ -313,7 +321,7 @@ namespace CoreClass
 		/// <returns>文件内容</returns>
 		public string ReadFile(string path)
 		{
-			path = HttpContext.Current.Server.MapPath("~/") + path;
+			path = Path.Combine(m_webrootpath, path);
 			StreamReader sr = new StreamReader(path, Encoding.UTF8);
 			string str = sr.ReadToEnd();
 			sr.Dispose();
@@ -331,7 +339,7 @@ namespace CoreClass
 			bool b = false;
 			try
 			{
-				path = HttpContext.Current.Server.MapPath("~/") + path;
+				path = Path.Combine(m_webrootpath, path);
 				StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8);
 				sw.Write(content);
 				sw.Dispose();
@@ -352,8 +360,8 @@ namespace CoreClass
 			bool b = false;
 			try
 			{
-				path = HttpContext.Current.Server.MapPath("~/") + path;
-				movetopath = HttpContext.Current.Server.MapPath("~/") + movetopath;
+				path = Path.Combine(m_webrootpath, path);
+				movetopath = Path.Combine(m_webrootpath, movetopath);
 				File.Move(path, movetopath);
 				b = true;
 			}
@@ -375,8 +383,8 @@ namespace CoreClass
 				{
 					Directory.CreateDirectory(movetopath);
 				}
-				path = HttpContext.Current.Server.MapPath("~/") + path;
-				movetopath = HttpContext.Current.Server.MapPath("~/") + movetopath;
+				path = Path.Combine(m_webrootpath, path);
+				movetopath = Path.Combine(m_webrootpath, movetopath);
 				File.Copy(path, movetopath, true);
 				b = true;
 			}
@@ -393,7 +401,8 @@ namespace CoreClass
 			bool b = false;
 			try
 			{
-				File.Delete(HttpContext.Current.Server.MapPath("~/") + path);
+				path = Path.Combine(m_webrootpath, path);
+				File.Delete(path);
 				b = true;
 			}
 			catch (Exception e) {  }

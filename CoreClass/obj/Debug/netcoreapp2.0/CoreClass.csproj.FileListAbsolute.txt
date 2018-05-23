@@ -1,6 +1,9 @@
 E:\others\panda\CoreClass\bin\Debug\netcoreapp2.0\CoreClass.deps.json
 E:\others\panda\CoreClass\bin\Debug\netcoreapp2.0\CoreClass.dll
+E:\others\panda\CoreClass\bin\Debug\netcoreapp2.0\CoreClass.pdb
 E:\others\panda\CoreClass\obj\Debug\netcoreapp2.0\CoreClass.csprojResolveAssemblyReference.cache
 E:\others\panda\CoreClass\obj\Debug\netcoreapp2.0\CoreClass.csproj.CoreCompileInputs.cache
 E:\others\panda\CoreClass\obj\Debug\netcoreapp2.0\CoreClass.AssemblyInfoInputs.cache
 E:\others\panda\CoreClass\obj\Debug\netcoreapp2.0\CoreClass.AssemblyInfo.cs
+E:\others\panda\CoreClass\obj\Debug\netcoreapp2.0\CoreClass.dll
+E:\others\panda\CoreClass\obj\Debug\netcoreapp2.0\CoreClass.pdb
