@@ -30,5 +30,12 @@ namespace CoreClass
 		{
 			_memoryCache = memoryCache;
 		}
+
+		private static HttpApplicationStatecs _application;
+		public static HttpApplicationStatecs Application => _application;
+		internal static void ConfigureApplication(HttpApplicationStatecs application)
+		{
+			_application = application;
+		}
 	}
 }

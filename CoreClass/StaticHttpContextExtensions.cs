@@ -15,6 +15,7 @@ namespace CoreClass
 		public static void AddHttpContextAccessor(this IServiceCollection services)
 		{
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+			services.AddSingleton<HttpApplicationStatecs>();
 		}
 
 		public static IApplicationBuilder UseStaticHttpContext(this IApplicationBuilder app)
@@ -27,6 +28,9 @@ namespace CoreClass
 
 			IMemoryCache cache = app.ApplicationServices.GetRequiredService<IMemoryCache>();
 			HttpContext.ConfigureMemoryCache(cache);
+
+			HttpApplicationStatecs application = app.ApplicationServices.GetRequiredService<HttpApplicationStatecs>();
+			HttpContext.ConfigureApplication(application);
 
 			return app;
 		}

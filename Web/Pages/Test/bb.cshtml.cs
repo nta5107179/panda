@@ -8,18 +8,12 @@ using CoreClass;
 
 namespace Web.Pages.Test
 {
-    public class aaModel : PageModel
+    public class bbModel : PageModel
     {
 		public OperateMemoryClass m_memory = new OperateMemoryClass();
 
-        public void OnGet()
+		public void OnGet()
         {
-			m_memory.SetApplication("test", "¹þ¹þ");
-		}
-
-		public void OnPost()
-		{
-			m_memory.RemoveApplication("test");
-		}
+        }
     }
 }

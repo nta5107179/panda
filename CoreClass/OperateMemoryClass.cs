@@ -165,7 +165,9 @@ namespace CoreClass
 			bool b = false;
 			try
 			{
-				HttpContext.Cache.Set(key, obj, TimeSpan.Zero);
+				MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions()
+					.SetSlidingExpiration(TimeSpan.MaxValue);
+				HttpContext.Cache.Set(key, obj, cacheEntryOptions);
 				b = true;
 			}
 			catch (Exception e) { throw e; }
@@ -183,12 +185,11 @@ namespace CoreClass
 			bool b = false;
 			try
 			{
-				path = Path.Combine(m_webrootpath, path);
+				PhysicalFileProvider _fileProvider = new PhysicalFileProvider(m_webrootpath);
 
-				IFileProvider _fileProvider = HttpContext.HostingEnvironment.ContentRootFileProvider;
 				IChangeToken changeToken = _fileProvider.Watch(path);
 				MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions()
-					.SetSlidingExpiration(TimeSpan.FromMinutes(5))
+					.SetSlidingExpiration(TimeSpan.MaxValue)
 					.AddExpirationToken(changeToken);
 				HttpContext.Cache.Set(key, obj, cacheEntryOptions);
 				b = true;
@@ -379,7 +380,6 @@ namespace CoreClass
 		/*
 		============application操作模块============
 		*/
-		/*
 		/// <summary>
 		/// 添加或修改application
 		/// </summary>
@@ -392,16 +392,16 @@ namespace CoreClass
 			try
 			{
 				object result = null;
-				HttpContext.TempData.TryGetValue(key, out result);
+				HttpContext.Application.TryGetValue(key, out result);
 				//application已存在
 				if (result != null)
 				{
-					HttpContext.TempData[key] = value;
+					HttpContext.Application[key] = value;
 				}
 				//application不存在
 				else
 				{
-					HttpContext.TempData.Add(key, value);
+					HttpContext.Application.Add(key, value);
 				}
 				b = true;
 			}
@@ -418,7 +418,7 @@ namespace CoreClass
 			object app = null;
 			try
 			{
-				app = HttpContext.TempData[key];
+				app = HttpContext.Application[key];
 			}
 			catch { }
 			return app;
@@ -431,11 +431,10 @@ namespace CoreClass
 		public bool RemoveApplication(string name)
 		{
 			bool b = false;
-			HttpContext.TempData.Remove(name);
+			HttpContext.Application.Remove(name);
 			b = true;
 			return b;
 		}
-		*/
 		/*
 		============跨域操作模块============
 		*/
