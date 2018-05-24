@@ -188,7 +188,7 @@ namespace CoreClass
 				+ " where"
 				+ " systypes.name<>'sysname' and syscolumns.id=object_id('" + procName + "')"
 				+ " and"
-				+ " systypes.xtype=syscolumns.xtype ORDER BY syscolumns.colid";
+				+ " systypes.xtype=syscolumns.xtype and systypes.xusertype=syscolumns.xusertype ORDER BY syscolumns.colid";
 
 
 			SqlDataAdapter dataAda = new SqlDataAdapter(sqlStr, m_sqlConn);
