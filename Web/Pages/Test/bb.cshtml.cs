@@ -14,6 +14,7 @@ namespace Web.Pages.Test
 
 		public void OnGet()
         {
+			m_memory.SetCookie("test", "≤‚ ‘", null);
         }
     }
 }
