@@ -20,6 +20,14 @@
     <ProjectReference Include="..\CoreClass\CoreClass.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Files\Test\" />
+    <None Include="wwwroot\JS\bootstrap\css\bootstrap-theme.css.map" />
+    <None Include="wwwroot\JS\bootstrap\css\bootstrap-theme.min.css.map" />
+    <None Include="wwwroot\JS\bootstrap\css\bootstrap.css.map" />
+    <None Include="wwwroot\JS\bootstrap\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\JS\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="wwwroot\JS\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="wwwroot\JS\bootstrap\js\bootstrap.js" />
+    <None Include="wwwroot\JS\bootstrap\js\bootstrap.min.js" />
+    <None Include="wwwroot\JS\bootstrap\js\npm.js" />
   </ItemGroup>
 </Project>
