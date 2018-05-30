@@ -1,18 +1,110 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "首页";
+	ViewData["Title"] = "首页";
 }
 
 <div class="_index">
-	<div class="row _text">
-		<div class="col-lg-3 col-md-2 col-xs-1"></div>
-		<div class="col-lg-6 col-md-8 col-xs-10">Helo I am Panda, 30 years old software engineer from Nantong, Jiangsu, China.</div>
-		<div class="col-lg-3 col-md-2 col-xs-1"></div>
-	</div>
-	<div class="row _vline">
-		<div class="col-xs-12">
-			<span></span>
+	<div class="_text">
+		<div class="container">
+			Helo I am Panda, <br />30 years old software engineer <br />from Nantong, Jiangsu, China.
 		</div>
 	</div>
+	<div class="_vline">
+		<span></span>
+	</div>
+	<div class="_skills">
+		<div class="container _box">
+			<div class="_title">
+				My Skills & Abilities
+			</div>
+			<div class="_content">
+				20岁走入工作岗位，从事Windows、Web编程至今，熟练运用.Net Framework、Javascript、Http5以及跨平台的.Net Core、Xamarin。
+				曾使用多种框架开发项目，如WPF、WinForm、AngularJS、VueJS、MVC、NSSH等。
+				并对集群部署有所了解，如使用Nginx+KeepAlived实现负载均衡和故障转移集群。
+				带过3年5人团队研发充电桩管理系统。
+			</div>
+			<div class="_list">
+				<div class="_li">
+					<div class="_caption">Team Management 技能熟练度</div>
+					<div class="_border" style="border-color:#140071"><span style="background-color:#140071; width:60%;"></span></div>
+				</div>
+				<div class="_li">
+					<div class="_caption">.Net Framework 技能熟练度</div>
+					<div class="_border" style="border-color:#009208"><span style="background-color:#009208; width:90%;"></span></div>
+				</div>
+				<div class="_li">
+					<div class="_caption">WPF、WinForm 技能熟练度</div>
+					<div class="_border" style="border-color:#cc6500"><span style="background-color:#cc6500; width:80%;"></span></div>
+				</div>
+				<div class="_li">
+					<div class="_caption">MVC、NSSH 技能熟练度</div>
+					<div class="_border" style="border-color:#b500a0"><span style="background-color:#b500a0; width:65%;"></span></div>
+				</div>
+				<div class="_li">
+					<div class="_caption">Javascript、Http5、AngularJS、VueJS 技能熟练度</div>
+					<div class="_border" style="border-color:#8c00cb"><span style="background-color:#8c00cb; width:90%;"></span></div>
+				</div>
+				<div class="_li">
+					<div class="_caption">.Net Core 技能熟练度</div>
+					<div class="_border" style="border-color:#8b0000"><span style="background-color:#8b0000; width:70%;"></span></div>
+				</div>
+				<div class="_li">
+					<div class="_caption">Xamarin 技能熟练度</div>
+					<div class="_border" style="border-color:#00b2a7"><span style="background-color:#00b2a7; width:65%;"></span></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="_help">
+		<div class="container _box">
+			<div class="_title">
+				How Can I Help You
+			</div>
+			<div class="_content">
+				使用所掌握的技能，我能够进行多种系统开发
+				如网站、ERP、MES、Html5、上位机、监控系统、物联网控制系统、手机APP
+			</div>
+			<div class="_list">
+				<div class="row">
+					<div class="col-sm-6 col-xs-12 _li">
+						<span class="glyphicon glyphicon-cloud _img"></span>
+						<span class="_caption">网站</span>
+						<div class="_content">利用.Net Framework即可搭建普通企业网站，如果需要搭建复杂的行业网站，最好使用框架支持，如MVC、NSSH。配合VueJS或AngularJS可实现完美的MVVM模式。而BootStrap的使用，则完美解决了响应式布局的问题。如果需要跨平台，可以使用.Net Core。</div>
+					</div>
+					<div class="col-sm-6 col-xs-12 _li">
+						<span class="glyphicon glyphicon-stats _img"></span>
+						<span class="_caption">ERP、MES</span>
+						<div class="_content">与网站相比，ERP、MES要复杂的多，除了需要网站开发的所有工具外，可能会更具需求增加终端硬件设备与服务器端的数据通信，通过服务器端完成数据采集，并通过客户端对数据进行实时显示。使用WPF或WinForm即可方便的实现这一点。</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6 col-xs-12 _li">
+						<span class="glyphicon glyphicon-th-large _img"></span>
+						<span class="_caption">上位机</span>
+						<div class="_content"></div>
+					</div>
+					<div class="col-sm-6 col-xs-12 _li">
+						<span class="glyphicon glyphicon-facetime-video _img"></span>
+						<span class="_caption">监控、物联网控制</span>
+						<div class="_content"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6 col-xs-12 _li">
+						<span class="glyphicon glyphicon-globe _img"></span>
+						<span class="_caption">Html5</span>
+						<div class="_content"></div>
+					</div>
+					<div class="col-sm-6 col-xs-12 _li">
+						<span class="glyphicon glyphicon-phone _img"></span>
+						<span class="_caption">手机APP</span>
+						<div class="_content"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
 </div>
