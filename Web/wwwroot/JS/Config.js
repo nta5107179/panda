@@ -1,3 +1,6 @@
+//根目录
+var g_root = "/";
+
 //获取随机数
 var static = {
     getRandom: function (min, max)
