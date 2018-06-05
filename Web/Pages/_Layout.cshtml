@@ -28,8 +28,12 @@
 	<!-- 包括所有已编译的插件 -->
 	<script src="~/JS/bootstrap/js/bootstrap.min.js"></script>
 
+	<!-- 引入 Vue.js -->
+	<script src="~/JS/vue.js"></script>
+
 	<link href="~/CSS/Config.css" rel="stylesheet" />
 	<script src="~/JS/Config.js"></script>
+
 </head>
 <body>
 	<div class="_top">
@@ -46,10 +50,9 @@
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
 						<li><a href="/Index">首页</a></li>
-						<li><a href="/About">个人简介</a></li>
 						<li><a href="/SkillShare">技术分享</a></li>
-						<li><a href="/Experience">个人经历</a></li>
-						<li><a href="/Contact">留言</a></li>
+						<li><a href="#Experience">个人经历</a></li>
+						<li><a href="#Contact">留言</a></li>
 						<li><a href="/TravelsMood">游记&心情</a></li>
 					</ul>
 				</div>
@@ -68,9 +71,10 @@
 			</div>
 		</div>
 	</div>
-    <div class="_middle">
-        @RenderBody()
-    </div>
+	<div class="_middle">
+		@RenderBody()
+		@Html.AntiForgeryToken();
+	</div>
 	<div class="_bottom">
 		<div class="container">
 			<div class="row">

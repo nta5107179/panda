@@ -11,7 +11,7 @@ namespace CoreClass
 	/// <summary>
 	/// T-Sql语句 存储过程执行类
 	/// </summary>
-	public class OperateSqlClass : OperateSqlClass_MSSQL
+	public class OperateSqlClass : OperateSqlClass_MYSQL
 	{
 		
 	}

@@ -528,17 +528,19 @@ namespace CoreClass
             int i = rd.Next(starnum, endnum);
             return i;
         }
-        /*
+		/*
         ============防注入模块============
         */
-        /// <summary>
-        /// 检测数据库注入
-        /// <param name="str">需要检测的字符串数组</param>
-        /// </summary>
-        public bool DetectSql(string[] strarr)
+		/// <summary>
+		/// 检测数据库注入
+		/// <param name="str">待检测的字符串数组</param>
+		/// <param name="arr">需要检测的字符串数组，默认为（",", ";", "\"", "'"）</param>
+		/// </summary>
+		/// <returns>true为有注入，false为没有注入</returns>
+		public bool DetectSql(string[] strarr, string[] arr = null)
         {
             bool b = false;
-            string[] arr = new string[] { ",", ";", "\"", "'" };
+            arr = arr!=null ? arr : new string[] { ",", ";", "\"", "'" };
 
             for (int i = 0; i < strarr.Length; i++)
             {
@@ -550,24 +552,67 @@ namespace CoreClass
                         break;
                     }
                 }
-                if (!b)
+                if (b)
                 {
                     break;
                 }
             }
             return b;
         }
-        /*
+		/// <summary>
+		/// 敏感字符屏蔽
+		/// <param name="str">待检测的字符串</param>
+		/// <param name="arr">需要检测的字符串数组默认为null</param>
+		/// </summary>
+		/// <returns>替换后的字符串</returns>
+		public string WordShield(string str, string[] arr = null)
+		{
+			if (str != null)
+			{
+				for (int j = 0; j < arr.Length; j++)
+				{
+					if (str != null)
+					{
+						str = Regex.Replace(str, arr[j], "*", RegexOptions.IgnoreCase);
+					}
+				}
+			}
+			return str;
+		}
+		/// <summary>
+		/// 敏感字符屏蔽
+		/// <param name="str">待检测的字符串数组</param>
+		/// <param name="arr">需要检测的字符串数组默认为null</param>
+		/// </summary>
+		/// <returns>替换后的字符串数组</returns>
+		public string[] WordShield(string[] str, string[] arr = null)
+		{
+			if (str != null)
+			{
+				for (int i = 0; i < str.Length; i++)
+				{
+					for (int j = 0; j < arr.Length; j++)
+					{
+						if (str[i] != null)
+						{
+							str[i] = Regex.Replace(str[i], arr[j], "*", RegexOptions.IgnoreCase);
+						}
+					}
+				}
+			}
+			return str;
+		}
+		/*
         ============进制转换============
         */
-        /// <summary>
-        /// 从汉字转换到16进制
-        /// </summary>
-        /// <param name="s">需要要转换的汉字</param>
-        /// <param name="charset">编码,如"utf-8","gb2312"</param>
-        /// <param name="separator">分隔符，没有则为null</param>
-        /// <returns></returns>
-        public string StrToAry16(string s, string charset, string separator)
+		/// <summary>
+		/// 从汉字转换到16进制
+		/// </summary>
+		/// <param name="s">需要要转换的汉字</param>
+		/// <param name="charset">编码,如"utf-8","gb2312"</param>
+		/// <param name="separator">分隔符，没有则为null</param>
+		/// <returns></returns>
+		public string StrToAry16(string s, string charset, string separator)
         {
             System.Text.Encoding chs = System.Text.Encoding.GetEncoding(charset);
             char[] arrChar = s.ToCharArray();

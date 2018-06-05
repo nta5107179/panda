@@ -4,7 +4,7 @@
 	ViewData["Title"] = "首页";
 }
 
-<div class="_index">
+<div id="app" class="_index">
 	<div class="_text">
 		<div class="container">
 			Helo I am Panda, <br />30 years old software engineer <br />from Nantong, Jiangsu, China.
@@ -106,6 +106,7 @@
 		</div>
 	</div>
 	<div class="_vline">
+		<a name="Experience"></a>
 		<span></span>
 	</div>
 	<div class="_experience">
@@ -186,83 +187,6 @@
 					<li><img src="~/Images/test/11.jpg" /><span class="glyphicon glyphicon-arrow-right"></span></li>
 				</ul>
 			</div>
-			<script>
-				$(function ()
-				{
-					var bgList = $("._buttongroup ul li");
-					bgList.click(function ()
-					{
-						bgList.removeClass("active");
-						$(this).addClass("active");
-
-						var imgArr = ["2.jpg", "5.jpg", "3.jpg", "4.jpg", "8.jpg", "9.jpg", "10.jpg", "11.jpg"];
-						var indexArr = [];
-						var random = static.getRandom(0, imgliList.length - 1);
-						while (true)
-						{
-							if (indexArr.indexOf(random) == -1)
-							{
-								indexArr.push(random);
-							} else
-							{
-								random = static.getRandom(0, imgliList.length - 1);
-							}
-							if (indexArr.length == imgliList.length)
-								break;
-						}
-						for (var i = 0; i < indexArr.length; i++)
-						{
-							(function (j)
-							{
-								setTimeout(function ()
-								{
-									var img = $(imgliList[indexArr[j]]);
-									active_out(img, function ()
-									{
-										var tImg = new Image();
-										tImg.src = "/Images/test/" + imgArr[indexArr[j]];
-										tImg.onload = function ()
-										{
-											img.attr("src", this.src);
-											active_in(img);
-										};
-									});
-								}, 100 * j)
-							})(i)
-						}
-
-					});
-					var imgliList = $("._imglist ul li img");
-					active_in(imgliList);
-
-					function active_in(obj, fct)
-					{
-						obj.addClass("active_in");
-						var f = function ()
-						{
-							$(this).removeClass();
-							$(this).css("opacity", 1);
-							if (fct != null)
-								fct();
-						};
-						; obj.one("animationend", f);
-						obj.one("webkitAnimationEnd", f);
-					}
-					function active_out(obj, fct)
-					{
-						obj.addClass("active_out");
-						var f = function ()
-						{
-							$(this).removeClass();
-							$(this).css("opacity", 0);
-							if (fct != null)
-								fct();
-						};
-						obj.one("animationend", f);
-						obj.one("webkitAnimationEnd", f);
-					}
-				});
-			</script>
 		</div>
 	</div>
 	<div class="_skillsharebut">
@@ -283,6 +207,7 @@
 		</div>
 	</div>
 	<div class="_vline">
+		<a name="Contact"></a>
 		<span></span>
 	</div>
 	<div class="_contact">
@@ -292,10 +217,10 @@
 				<div class="col-sm-6 col-xs-12">
 					<div class="row _left">
 						<h3>欢迎给我留言</h3>
-						<div class="col-xs-6 _name"><input type="text" placeholder="您的姓名" /></div>
-						<div class="col-xs-6 _email"><input type="text" placeholder="您的E-Mail" /></div>
-						<div class="col-xs-12 _message"><textarea placeholder="您想要给我的留言内容"></textarea></div>
-						<div class="col-xs-12 _submit"><button>Submit It</button></div>
+						<div class="col-xs-6 _name"><input type="text" v-model="post.name" placeholder="您的姓名" /></div>
+						<div class="col-xs-6 _email"><input type="text" v-model="post.email" placeholder="您的E-Mail" /></div>
+						<div class="col-xs-12 _message"><textarea v-model="post.content" placeholder="您想要给我的留言内容"></textarea></div>
+						<div class="col-xs-12 _submit"><button type="button" id="addMessage">Submit It</button></div>
 					</div>
 				</div>
 				<div class="col-sm-6 col-xs-12">
@@ -306,5 +231,123 @@
 			</div>
 		</div>
 	</div>
-
 </div>
+
+<script>
+	//定义vue实例
+	var vm = new Vue({
+		el: "#app",
+		data: {
+			post: {}
+		}
+	});
+	//初始化
+	$(function ()
+	{
+		skillShare();
+		contact();
+	});
+
+	//留言
+	function contact()
+	{
+		$("#addMessage").click(function ()
+		{
+			$(this).attr("disabled", true);
+			$.ajax({
+				type: "post",
+				url: "?handler=AddMessage",
+				data: vm.post,
+				success: function (res)
+				{
+					var json = eval("("+res+")");
+					if (json.error)
+					{
+						alert(json.error);
+					}
+					else
+					{
+						alert(json.success);
+					}
+					$("#addMessage").attr("disabled", false);
+				}
+			});
+		});
+	}
+	//技术分享特效与数据
+	function skillShare()
+	{
+		var bgList = $("._buttongroup ul li");
+		bgList.click(function ()
+		{
+			bgList.removeClass("active");
+			$(this).addClass("active");
+
+			var imgArr = ["2.jpg", "5.jpg", "3.jpg", "4.jpg", "8.jpg", "9.jpg", "10.jpg", "11.jpg"];
+			var indexArr = [];
+			var random = static.getRandom(0, imgliList.length - 1);
+			while (true)
+			{
+				if (indexArr.indexOf(random) == -1)
+				{
+					indexArr.push(random);
+				} else
+				{
+					random = static.getRandom(0, imgliList.length - 1);
+				}
+				if (indexArr.length == imgliList.length)
+					break;
+			}
+			for (var i = 0; i < indexArr.length; i++)
+			{
+				(function (j)
+				{
+					setTimeout(function ()
+					{
+						var img = $(imgliList[indexArr[j]]);
+						active_out(img, function ()
+						{
+							var tImg = new Image();
+							tImg.src = "/Images/test/" + imgArr[indexArr[j]];
+							tImg.onload = function ()
+							{
+								img.attr("src", this.src);
+								active_in(img);
+							};
+						});
+					}, 100 * j)
+				})(i)
+			}
+
+		});
+		var imgliList = $("._imglist ul li img");
+		active_in(imgliList);
+
+		function active_in(obj, fct)
+		{
+			obj.addClass("active_in");
+			var f = function ()
+			{
+				$(this).removeClass();
+				$(this).css("opacity", 1);
+				if (fct != null)
+					fct();
+			};
+			; obj.one("animationend", f);
+			obj.one("webkitAnimationEnd", f);
+		}
+		function active_out(obj, fct)
+		{
+			obj.addClass("active_out");
+			var f = function ()
+			{
+				$(this).removeClass();
+				$(this).css("opacity", 0);
+				if (fct != null)
+					fct();
+			};
+			obj.one("animationend", f);
+			obj.one("webkitAnimationEnd", f);
+		}
+	}
+</script>
