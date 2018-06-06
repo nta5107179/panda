@@ -1,7 +1,7 @@
 ﻿@page
 @model IndexModel
 @{
-	ViewData["Title"] = "首页";
+	ViewData["Title"] = Config.g_indextitle;
 }
 
 <div id="app" class="_index">
@@ -217,9 +217,9 @@
 				<div class="col-sm-6 col-xs-12">
 					<div class="row _left">
 						<h3>欢迎给我留言</h3>
-						<div class="col-xs-6 _name"><input type="text" v-model="post.name" placeholder="您的姓名" /></div>
-						<div class="col-xs-6 _email"><input type="text" v-model="post.email" placeholder="您的E-Mail" /></div>
-						<div class="col-xs-12 _message"><textarea v-model="post.content" placeholder="您想要给我的留言内容"></textarea></div>
+						<div class="col-xs-6 _name"><input type="text" v-model="post.m_name" placeholder="您的姓名" /></div>
+						<div class="col-xs-6 _email"><input type="text" v-model="post.m_email" placeholder="您的E-Mail" /></div>
+						<div class="col-xs-12 _message"><textarea v-model="post.m_content" placeholder="您想要给我的留言内容"></textarea></div>
 						<div class="col-xs-12 _submit"><button type="button" id="addMessage">Submit It</button></div>
 					</div>
 				</div>

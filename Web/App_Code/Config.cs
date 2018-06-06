@@ -54,11 +54,11 @@ public static class Config
 	/// <summary>
 	/// 允许上传图片类型
 	/// </summary>
-    public static string g_img = GetWebconfig("g_img");
+    public static string g_imgtype = GetWebconfig("g_imgtype");
 	/// <summary>
 	/// 允许上传文件类型
 	/// </summary>
-    public static string g_file = GetWebconfig("g_file");
+    public static string g_filetype = GetWebconfig("g_filetype");
 	/// <summary>
 	/// 允许上传图片最大大小(单位 B)
 	/// </summary>
