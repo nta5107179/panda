@@ -24,14 +24,14 @@ public class AppCode : Factory
 	/// </summary>
 	public void Redirect()
 	{
-		HttpContext.Current.Response.Redirect(Config.g_root + "Login.aspx");
+		HttpContext.Current.Response.Redirect(Config.g_root + "Login");
 	}
 	/// <summary>
 	/// 未登录跳转
 	/// </summary>
 	public void RedirectAdmin()
 	{
-		HttpContext.Current.Response.Redirect(Config.g_root + "Admin/Login.aspx");
+		HttpContext.Current.Response.Redirect(Config.g_adminroot + "Login");
 	}
 	
 }

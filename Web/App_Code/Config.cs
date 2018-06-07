@@ -22,6 +22,10 @@ public static class Config
 	/// </summary>
 	public static string g_root = GetWebconfig("g_root");
 	/// <summary>
+	/// 根目录
+	/// </summary>
+	public static string g_adminroot = GetWebconfig("g_adminroot");
+	/// <summary>
 	/// 文件目录
 	/// </summary>
     public static string g_filepath = GetWebconfig("g_filepath");

@@ -16,23 +16,23 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 	<!-- 引入 Bootstrap -->
-	<link href="~/JS/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="@(Config.g_root)JS/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 	<!-- HTML5 Shim 和 Respond.js 用于让 IE8 支持 HTML5元素和媒体查询 -->
 	<!-- 注意： 如果通过 file://  引入 Respond.js 文件，则该文件无法起效果 -->
 	<!--[if lt IE 9]>
-		<script src="~/JS/html5shiv.min.js"></script>
-		<script src="~/JS/respond.min.js"></script>
+		<script src="@(Config.g_root)JS/html5shiv.min.js"></script>
+		<script src="@(Config.g_root)JS/respond.min.js"></script>
 	<![endif]-->
 	<!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
-	<script src="~/JS/jquery.min.js"></script>
+	<script src="@(Config.g_root)JS/jquery.min.js"></script>
 	<!-- 包括所有已编译的插件 -->
-	<script src="~/JS/bootstrap/js/bootstrap.min.js"></script>
+	<script src="@(Config.g_root)JS/bootstrap/js/bootstrap.min.js"></script>
 
 	<!-- 引入 Vue.js -->
-	<script src="~/JS/vue.js"></script>
+	<script src="@(Config.g_root)JS/vue.js"></script>
 
-	<link href="~/CSS/Config.css" rel="stylesheet" />
-	<script src="~/JS/Config.js"></script>
+	<link href="@(Config.g_root)CSS/Config.css" rel="stylesheet" />
+	<script src="@(Config.g_root)JS/Config.js"></script>
 
 </head>
 <body>
@@ -61,12 +61,12 @@
 		<div class="row _bg">
 			<div class="col-xs-12">
 				<div class="col-md-4 col-sm-3 col-xs-2"></div>
-				<div class="col-md-4 col-sm-6 col-xs-8 _word"><img src="~/Images/panda_word.png" /></div>
+				<div class="col-md-4 col-sm-6 col-xs-8 _word"><img src="@(Config.g_root)Images/panda_word.png" /></div>
 				<div class="col-md-4 col-sm-3 col-xs-2"></div>
 			</div>
 			<div class="col-xs-12">
 				<div class="col-md-4 col-sm-3 col-xs-2"></div>
-				<div class="col-md-4 col-sm-6 col-xs-8 _icon"><div><img src="~/Images/icon.png" class="img-circle" /></div></div>
+				<div class="col-md-4 col-sm-6 col-xs-8 _icon"><div><img src="@(Config.g_root)Images/icon.png" class="img-circle" /></div></div>
 				<div class="col-md-4 col-sm-3 col-xs-2"></div>
 			</div>
 		</div>
@@ -78,7 +78,7 @@
 	<div class="_bottom">
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-6 col-xs-12 _left"><img src="~/Images/panda_word.png" /></div>
+				<div class="col-sm-6 col-xs-12 _left"><img src="@(Config.g_root)Images/panda_word.png" /></div>
 				<div class="col-sm-6 col-xs-12 _right">
 					<div>苏ICP备000000000000号</div>
 					<div>--静海熊猫</div>

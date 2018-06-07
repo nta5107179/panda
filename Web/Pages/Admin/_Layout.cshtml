@@ -10,34 +10,37 @@
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<!-- Bootstrap 3.3.7 -->
-	<link rel="stylesheet" href="~/Admin/JS/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="@(Config.g_adminroot)JS/bootstrap/css/bootstrap.min.css">
 	<!-- Theme style -->
-	<link rel="stylesheet" href="~/Admin/JS/AdminLTE/css/AdminLTE.min.css">
+	<link rel="stylesheet" href="@(Config.g_adminroot)JS/AdminLTE/css/AdminLTE.min.css">
 	<!-- AdminLTE Skins. Choose a skin from the css/skins
 		 folder instead of downloading all of them to reduce the load. -->
-	<link rel="stylesheet" href="~/Admin/JS/AdminLTE/css/skins/_all-skins.min.css">
+	<link rel="stylesheet" href="@(Config.g_adminroot)JS/AdminLTE/css/skins/_all-skins.min.css">
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>
-		<script src="~/Admin/JS/html5shiv.min.js"></script>
-		<script src="~/Admin/JS/respond.min.js"></script>
+		<script src="@(Config.g_adminroot)JS/html5shiv.min.js"></script>
+		<script src="@(Config.g_adminroot)JS/respond.min.js"></script>
 	<![endif]-->
 	<!-- Font Awesome -->
-	<link rel="stylesheet" href="~/Admin/JS/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="@(Config.g_adminroot)JS/font-awesome/css/font-awesome.min.css">
+	<!-- DataTables -->
+	<link rel="stylesheet" href="@(Config.g_adminroot)JS/datatables.net-bs/css/dataTables.bootstrap.min.css">
 
 	<!-- jQuery 3 -->
-	<script src="~/Admin/JS/jquery.min.js"></script>
+	<script src="@(Config.g_adminroot)JS/jquery.min.js"></script>
 	<!-- Bootstrap 3.3.7 -->
-	<script src="~/Admin/JS/bootstrap/js/bootstrap.min.js"></script>
+	<script src="@(Config.g_adminroot)JS/bootstrap/js/bootstrap.min.js"></script>
 	<!-- AdminLTE App -->
-	<script src="~/Admin/JS/AdminLTE/js/adminlte.min.js"></script>
-	<!-- AdminLTE for demo purposes -->
-	<script src="~/Admin/JS/AdminLTE/js/demo.js"></script>
+	<script src="@(Config.g_adminroot)JS/AdminLTE/js/adminlte.min.js"></script>
 	<!-- 引入 Vue.js -->
-	<script src="~/Admin/JS/vue.js"></script>
+	<script src="@(Config.g_adminroot)JS/vue.js"></script>
+	<!-- DataTables -->
+	<script src="@(Config.g_adminroot)JS/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="@(Config.g_adminroot)JS/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 
-	<link href="~/Admin/CSS/Config.css" rel="stylesheet" />
-	<script src="~/Admin/JS/Config.js"></script>
+	<link href="@(Config.g_adminroot)CSS/Config.css" rel="stylesheet" />
+	<script src="@(Config.g_adminroot)JS/Config.js"></script>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 	<div class="wrapper">
@@ -59,9 +62,14 @@
 					<ul class="nav navbar-nav">
 						<!-- Messages: style can be found in dropdown.less-->
 						<li class="dropdown messages-menu">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<a href="#" class="dropdown-toggle">
 								<i class="fa fa-envelope-o"></i>
 								<span class="label bg-red">5</span>
+							</a>
+						</li>
+						<li class="dropdown messages-menu">
+							<a href="@(Config.g_adminroot)unlogin" class="dropdown-toggle">
+								<i class="fa fa-sign-out"></i>
 							</a>
 						</li>
 					</ul>
@@ -75,7 +83,7 @@
 				<!-- Sidebar user panel -->
 				<div class="user-panel">
 					<div class="pull-left image">
-						<img src="~/Admin/Images/user2-160x160.jpg" class="img-circle" alt="User Image">
+						<img src="@(Config.g_adminroot)Images/user2-160x160.jpg" class="img-circle" alt="User Image">
 					</div>
 					<div class="pull-left info">
 						<p>Panda</p>
