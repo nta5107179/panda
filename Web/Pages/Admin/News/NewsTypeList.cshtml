@@ -1,0 +1,63 @@
+﻿@page
+@model NewsTypeListModel
+@{
+	Layout = "~/Pages/Admin/_Layout.cshtml";
+	ViewData["Title"] = "分类列表";
+}
+<div class="row _tablelist" id="app">
+	<div class="col-xs-12">
+		<table class="table table-bordered table-hover">
+			<caption>查询</caption>
+			<thead>
+				<tr>
+					<th>名称</th>
+					<th>城市</th>
+					<th>邮编</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Tanmay</td>
+					<td>Bangalore</td>
+					<td>560001</td>
+				</tr>
+				<tr>
+					<td>Sachin</td>
+					<td>Mumbai</td>
+					<td>400003</td>
+				</tr>
+				<tr>
+					<td>Uma</td>
+					<td>Pune</td>
+					<td>411027</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="col-xs-12">
+		<h5>总页数x, 当前第n页</h5>
+		<ul class="pagination _pages">
+			<li><a href="#">&laquo;</a></li>
+			<li class="active"><a href="#">1</a></li>
+			<li class="disabled"><a href="#">2</a></li>
+			<li><a href="#">3</a></li>
+			<li><a href="#">&raquo;</a></li>
+		</ul>
+	</div>
+</div>
+<script>
+	//设置表格样式
+	$(window).resize(function ()
+	{
+		setTableStyle();
+	});
+	$(window).load(function ()
+	{
+		setTableStyle();
+	});
+	function setTableStyle()
+	{
+		//alert($("#content-wrapper").innerHeight())
+		$("#app").css("height", $(window).height() - ($(window).width()<768?100:50) - $("#content-header").outerHeight() - 30)
+	}
+</script>

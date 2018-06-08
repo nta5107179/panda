@@ -1,8 +1,8 @@
 ﻿html{font-size:18px; overflow-x:hidden;}
-@media (max-width: 992px) {
+@media (max-width: 991px) {
 	html{font-size:16px;}
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
 	html{font-size:14px;}
 }
 body{font-size:1rem; color:#636363; overflow:hidden; font-family:Arial, Microsoft YaHei,STSong;}
@@ -13,7 +13,7 @@ body{font-size:1rem; color:#636363; overflow:hidden; font-family:Arial, Microsof
 		._top ._bg ._word{text-align:center}
 			._top ._bg ._word img{margin:0 auto; width:17rem; max-width:100%;}
 		._top ._bg ._icon{text-align:center; position:relative; height:14rem;}
-		@media (max-width: 768px) {
+		@media (max-width: 767px) {
 			._top ._bg ._icon{height:12rem;}
 		}
 			._top ._bg ._icon div{position:absolute; bottom:-8rem; left:0; width:100%;}
@@ -25,14 +25,14 @@ body{font-size:1rem; color:#636363; overflow:hidden; font-family:Arial, Microsof
 	._bottom ._left{}
 		._bottom ._left img{width:10rem; max-width:100%;}
 	._bottom ._right{color:#fff; line-height:2rem;}
-	@media (max-width: 768px) {
+	@media (max-width: 767px) {
 		._bottom ._right{margin-top:1rem;}
 	}
 
 
 ._index{margin-top:10rem;}
 	._index ._text{font-family:FangSong; font-weight:500; text-align:center; color:#959595; font-size:2.5rem; line-height:2.5rem;}
-	@media (max-width: 768px) {
+	@media (max-width: 767px) {
 		._index ._text{font-size:1.5rem;}
 	}
 	._index ._vline{text-align:center; margin-top:4rem;}
@@ -41,7 +41,7 @@ body{font-size:1rem; color:#636363; overflow:hidden; font-family:Arial, Microsof
 		._index ._skills ._box{}
 			._index ._skills ._box ._title{font-family:STSong; font-size:3.5rem; color:#000000;}
 			._index ._skills ._box ._content{font-size:1rem; color:#464646; width:85%; letter-spacing:1px; line-height:1.5rem; margin-top:0.5rem;}
-			@media (max-width: 768px) {
+			@media (max-width: 767px) {
 				._index ._skills ._box ._title{font-size:2.2rem;}
 				._index ._skills ._box ._content{width:100%;}
 			}
@@ -54,7 +54,7 @@ body{font-size:1rem; color:#636363; overflow:hidden; font-family:Arial, Microsof
 		._index ._help ._box{}
 			._index ._help ._box ._title{font-family:STSong; font-size:3.5rem; color:#000000;}
 			._index ._help ._box ._content{font-size:1rem; color:#464646; width:85%; letter-spacing:1px; line-height:1.5rem; margin-top:1.5rem;}
-			@media (max-width: 768px) {
+			@media (max-width: 767px) {
 				._index ._help ._box ._title{font-size:2.2rem;}
 				._index ._help ._box ._content{width:100%;}
 			}
@@ -68,7 +68,7 @@ body{font-size:1rem; color:#636363; overflow:hidden; font-family:Arial, Microsof
 		._index ._experience ._box{position:relative; z-index:2}
 			._index ._experience ._box ._title{font-family:STSong; font-size:3.5rem; color:#000000;}
 			._index ._experience ._box ._content{font-size:1rem; color:#464646; width:85%; letter-spacing:1px; line-height:1.5rem; margin-top:1.5rem;}
-			@media (max-width: 768px) {
+			@media (max-width: 767px) {
 				._index ._experience ._box ._title{font-size:2.2rem;}
 				._index ._experience ._box ._content{width:100%;}
 			}
@@ -81,7 +81,7 @@ body{font-size:1rem; color:#636363; overflow:hidden; font-family:Arial, Microsof
 		._index ._skillshare ._box{}
 			._index ._skillshare ._box ._title{font-family:STSong; font-size:3.5rem; color:#000000;}
 			._index ._skillshare ._box ._content{font-size:1rem; color:#464646; width:85%; letter-spacing:1px; line-height:1.5rem; margin-top:1.5rem;}
-			@media (max-width: 768px) {
+			@media (max-width: 767px) {
 				._index ._skillshare ._box ._title{font-size:2.2rem;}
 				._index ._skillshare ._box ._content{width:100%;}
 			}
@@ -103,7 +103,7 @@ body{font-size:1rem; color:#636363; overflow:hidden; font-family:Arial, Microsof
 			._index ._skillshare ._box ._imglist{margin-top:4rem;}
 				._index ._skillshare ._box ._imglist ul{list-style:none; padding:0; overflow:hidden;}
 					._index ._skillshare ._box ._imglist ul li{float:left; width:25%; cursor:pointer; position:relative;}
-					@media (max-width: 768px) {
+					@media (max-width: 767px) {
 						._index ._skillshare ._box ._imglist ul li{width:50%;}
 					}
 						._index ._skillshare ._box ._imglist ul li img{width:100%; opacity:0;}
@@ -128,13 +128,13 @@ body{font-size:1rem; color:#636363; overflow:hidden; font-family:Arial, Microsof
 					._index ._skillshare ._box ._imglist ul li:hover{border-color:#ff0000;}
 	._index ._skillsharebut{margin-top:1rem;}
 		._index ._skillsharebut ._box{}
-			._index ._skillsharebut ._box ._title{margin-top:1rem; font-size:2.5rem; color:#000000; text-indent:5rem;}
+			._index ._skillsharebut ._box ._title{margin-top:1rem; font-size:2.2rem; color:#000000; text-indent:5rem;}
 			._index ._skillsharebut ._box ._content{font-size:1.5rem; color:#000000; width:100%; letter-spacing:1px; line-height:1.5rem; text-indent:5rem;}
-			@media (max-width: 768px) {
+			@media (max-width: 767px) {
 				._index ._skillsharebut ._box ._title{font-size:2.2rem; text-indent:0;}
 				._index ._skillsharebut ._box ._content{text-indent:0;}
 			}
-			._index ._skillsharebut ._box ._us{width:14rem; max-width:100%; height:4.5rem; margin-top:1.5rem; font-size:1.5rem; color:#fff; font-weight:bold; background-color:#000; border:5px solid #000;
+			._index ._skillsharebut ._box ._us{width:14rem; max-width:100%; height:4rem; margin-top:1.5rem; font-size:1.5rem; color:#fff; font-weight:bold; background-color:#000; border:5px solid #000;
 				transition:background-color 300ms, color 300ms;
 				-webkit-transition:background-color 300ms, color 300ms; /* Safari */
 			}
@@ -143,7 +143,7 @@ body{font-size:1rem; color:#636363; overflow:hidden; font-family:Arial, Microsof
 		._index ._contact ._bg{position:absolute; top:0; left:0; width:100%; height:100%; background-color:#000; opacity:0.5; z-index:1;}
 		._index ._contact ._box{position:relative; z-index:2; padding-top:7rem; padding-bottom:7rem;}
 			._index ._contact ._box ._left{background-color:#fff; padding:3rem; border:1px solid #3d3d3d; margin:0;}
-			@media (max-width: 768px) {
+			@media (max-width: 767px) {
 				._index ._contact ._box ._left{padding:15px;}
 			}
 				._index ._contact ._box ._left h3{color:#000; padding-bottom:20px; margin:0;}

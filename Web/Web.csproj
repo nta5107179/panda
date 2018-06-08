@@ -66,6 +66,10 @@
     <None Include="wwwroot\Admin\JS\font-awesome\scss\_screen-reader.scss" />
     <None Include="wwwroot\Admin\JS\font-awesome\scss\_stacked.scss" />
     <None Include="wwwroot\Admin\JS\font-awesome\scss\_variables.scss" />
+    <None Include="wwwroot\Admin\JS\jquery-slimscroll\examples\libs\prettify\prettify.js" />
+    <None Include="wwwroot\Admin\JS\jquery-slimscroll\jquery.slimscroll.js" />
+    <None Include="wwwroot\Admin\JS\jquery-slimscroll\jquery.slimscroll.min.js" />
+    <None Include="wwwroot\Admin\JS\jquery-slimscroll\README.md" />
     <None Include="wwwroot\JS\bootstrap\css\bootstrap-theme.css.map" />
     <None Include="wwwroot\JS\bootstrap\css\bootstrap-theme.min.css.map" />
     <None Include="wwwroot\JS\bootstrap\css\bootstrap.css.map" />
