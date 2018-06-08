@@ -27,12 +27,6 @@
     <None Include="wwwroot\Admin\JS\AdminLTE\js\demo.js" />
     <None Include="wwwroot\Admin\JS\AdminLTE\js\pages\dashboard.js" />
     <None Include="wwwroot\Admin\JS\AdminLTE\js\pages\dashboard2.js" />
-    <None Include="wwwroot\Admin\JS\datatables.net-bs\js\dataTables.bootstrap.js" />
-    <None Include="wwwroot\Admin\JS\datatables.net-bs\js\dataTables.bootstrap.min.js" />
-    <None Include="wwwroot\Admin\JS\datatables.net-bs\Readme.md" />
-    <None Include="wwwroot\Admin\JS\datatables.net\js\jquery.dataTables.js" />
-    <None Include="wwwroot\Admin\JS\datatables.net\js\jquery.dataTables.min.js" />
-    <None Include="wwwroot\Admin\JS\datatables.net\Readme.md" />
     <None Include="wwwroot\Admin\JS\font-awesome\.gitignore" />
     <None Include="wwwroot\Admin\JS\font-awesome\.npmignore" />
     <None Include="wwwroot\Admin\JS\font-awesome\css\font-awesome.css.map" />
