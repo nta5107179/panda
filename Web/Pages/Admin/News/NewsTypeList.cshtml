@@ -4,39 +4,36 @@
 	Layout = "~/Pages/Admin/_Layout.cshtml";
 	ViewData["Title"] = "分类列表";
 }
-<div class="row _tablelist" id="app">
-	<div class="col-xs-12">
-		<table class="table table-bordered table-hover">
-			<caption>查询</caption>
-			<thead>
-				<tr>
-					<th>名称</th>
-					<th>城市</th>
-					<th>邮编</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>Tanmay</td>
-					<td>Bangalore</td>
-					<td>560001</td>
-				</tr>
-				<tr>
-					<td>Sachin</td>
-					<td>Mumbai</td>
-					<td>400003</td>
-				</tr>
-				<tr>
-					<td>Uma</td>
-					<td>Pune</td>
-					<td>411027</td>
-				</tr>
-			</tbody>
-		</table>
+<div class="row _content _tablelist" id="app">
+	<div class="col-xs-12 _list">
+		<div class="_box">
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th style="width:60px;">编号</th>
+						<th style="width:auto;" id="_variable_th">名称</th>
+						<th style="width:120px;">父类型</th>
+						<th style="width:60px;">排序</th>
+						<th style="width:60px;">审核</th>
+						<th style="width:120px;">操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Tanmay</td>
+						<td>Bangalore</td>
+						<td>560001</td>
+						<td>2</td>
+						<td>3</td>
+						<td><a href="#">修改</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
-	<div class="col-xs-12">
+	<div class="col-xs-12 _pages">
 		<h5>总页数x, 当前第n页</h5>
-		<ul class="pagination _pages">
+		<ul class="pagination">
 			<li><a href="#">&laquo;</a></li>
 			<li class="active"><a href="#">1</a></li>
 			<li class="disabled"><a href="#">2</a></li>
@@ -47,17 +44,13 @@
 </div>
 <script>
 	//设置表格样式
+	var _variable_th_value = 120;
 	$(window).resize(function ()
 	{
-		setTableStyle();
+		static.setTableStyle(_variable_th_value);
 	});
 	$(window).load(function ()
 	{
-		setTableStyle();
+		static.setTableStyle(_variable_th_value);
 	});
-	function setTableStyle()
-	{
-		//alert($("#content-wrapper").innerHeight())
-		$("#app").css("height", $(window).height() - ($(window).width()<768?100:50) - $("#content-header").outerHeight() - 30)
-	}
 </script>

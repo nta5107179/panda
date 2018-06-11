@@ -4,8 +4,14 @@
 /*登录*/
 .checkbox label{padding-left:0;}
 
+/*内容区域*/
+._content{padding:15px 0; background-color:#fff; margin:0; border-top:3px solid #ccc;}
+
 /*表格列表*/
-._tablelist{padding:15px 0; background-color:#fff; margin:0; border-top:3px solid #ccc;}
-	._tablelist caption{padding-top:0;}
-	._tablelist > div h5{float:left;}
-	._tablelist > div ._pages{margin:0; float:right;}
+._tablelist{padding-bottom:65px;}
+	._tablelist ._list{height:100%;}
+		._tablelist ._list ._box{height:100%; overflow:auto;}
+			._tablelist ._list ._box table{margin:0; max-width:none;}
+	._tablelist ._pages{margin-top:15px;}
+		._tablelist ._pages h5{float:left;}
+		._tablelist ._pages ul{margin:0; float:right;}

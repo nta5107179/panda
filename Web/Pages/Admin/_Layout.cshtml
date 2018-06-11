@@ -135,6 +135,22 @@
 			@RenderBody()
 			@Html.AntiForgeryToken()
 		</section>
+		<script>
+			//设置内容区域自适应
+			$(window).resize(function ()
+			{
+				setAppAdaptive();
+			});
+			$(window).load(function ()
+			{
+				setAppAdaptive();
+			});
+			function setAppAdaptive()
+			{
+				//alert($("#content-wrapper").innerHeight())
+				$("#app").css("height", $(window).height() - ($(window).width() < 768 ? 100 : 50) - $("#content-header").outerHeight() - 30)
+			}
+		</script>
 		<!-- /.content -->
 	</div>
 </div>
