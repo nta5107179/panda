@@ -12,7 +12,7 @@
 					<tr>
 						<th style="width:60px;">编号</th>
 						<th style="width:auto;" id="_variable_th">名称</th>
-						<th style="width:120px;">父类型</th>
+						<th style="width:150px;">父类型</th>
 						<th style="width:60px;">排序</th>
 						<th style="width:60px;">审核</th>
 						<th style="width:120px;">操作</th>
@@ -31,25 +31,46 @@
 			</table>
 		</div>
 	</div>
-	<div class="col-xs-12 _pages">
-		<h5>总页数x, 当前第n页</h5>
-		<ul class="pagination">
-			<li><a href="#">&laquo;</a></li>
-			<li class="active"><a href="#">1</a></li>
-			<li class="disabled"><a href="#">2</a></li>
-			<li><a href="#">3</a></li>
-			<li><a href="#">&raquo;</a></li>
-		</ul>
-	</div>
+	<table-pages v-bind:action="filter" v-on:pagechange="pageChange()"></table-pages>
 </div>
 <script>
+	const router = new VueRouter()
+	var vm = new Vue({
+		router,
+		el: '#app',
+		data: {
+			filter: {
+				page: 1,
+				limit: 25,
+				total: 10
+			}
+		},
+		created: function()
+		{
+			this.pageLoad();
+		},
+		watch: {
+			$route: "pageLoad"
+		},
+		methods: {
+			pageLoad: function (to, from)
+			{
+				if (!static.isEmptyJson(this.$route.query))
+					this.filter = static.CopyRouteQuery(this.$route.query);
+			},
+			pageChange: function ()
+			{
+				router.push({ query: vm.filter })
+			}
+		}
+	});
+	
 	//设置表格样式
-	var _variable_th_value = 120;
+	var _variable_th_value = 150;
 	$(window).resize(function ()
 	{
 		static.setTableStyle(_variable_th_value);
-	});
-	$(window).load(function ()
+	}).load(function ()
 	{
 		static.setTableStyle(_variable_th_value);
 	});

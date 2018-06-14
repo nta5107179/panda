@@ -1,14 +1,14 @@
-//¸ùÄ¿Â¼
+ï»¿//æ ¹ç›®å½•
 var g_root = "/";
 
-//¾²Ì¬·½·¨
+//é™æ€æ–¹æ³•
 var static = {
-    //»ñÈ¡Ëæ»úÊı
+    //è·å–éšæœºæ•°
     getRandom: function (min, max)
     {
         return Math.floor(Math.random() * (max - min + 1) + min);
     },
-    //½«json×ª»»³Éurl²ÎÊı
+    //å°†jsonè½¬æ¢æˆurlå‚æ•°
     getAction: function (json)
     {
         var arr = [];
@@ -24,33 +24,57 @@ var static = {
 	{
         var thList = $(".table thead tr th");
         var widthSum = 0;
-        var _variable_value = variable_value; //¿É±ä¿í¶È×îĞ¡Öµ
+        var _variable_value = variable_value; //å¯å˜å®½åº¦æœ€å°å€¼
         for (var i = 0; i < thList.length; i++)
         {
             if (thList[i].style.width != "auto")
                 widthSum += parseInt(thList[i].style.width.replace("px"));
         }
         static.newBoxWidth = $("#app ._list ._box").width();
-        if (static.oldBoxWidth != 0)
+        if ((static.oldBoxWidth != 0 && static.oldBoxWidth > static.newBoxWidth && static.newBoxWidth < widthSum + _variable_value) || (static.oldBoxWidth == 0 && static.newBoxWidth < widthSum + _variable_value))
         {
-            if (static.oldBoxWidth > static.newBoxWidth && static.newBoxWidth < widthSum + _variable_value)
-            {
-                $(".table").css("width", "max-content");
-                $("#_variable_th").css("width", _variable_value);
-            }
-            else if (static.oldBoxWidth < static.newBoxWidth && static.newBoxWidth > widthSum)
-            {
-                $(".table").css("width", "100%");
-                $("#_variable_th").css("width", "auto");
-            }
+            $(".table").css("width", "-webkit-max-content");
+            $("#_variable_th").css("width", _variable_value);
+        }
+        else if ((static.oldBoxWidth != 0 && static.oldBoxWidth < static.newBoxWidth && static.newBoxWidth >= widthSum) || (static.oldBoxWidth == 0 && static.newBoxWidth >= widthSum))
+        {
+            $(".table").css("width", "100%");
+            $("#_variable_th").css("width", "auto");
         }
         static.oldBoxWidth = static. newBoxWidth
-
+    },
+    isEmptyJson:function (e) {
+        var t;
+        for (t in e)
+            return false;
+        return true;
+    },
+    CopyRouteQuery: function (e)
+    {
+        var newJson = {};
+        var regex_float = new RegExp(/^\d+\.\d+$/)
+        var regex_int = new RegExp(/^\d+$/)
+        for (t in e)
+        {
+            if (regex_float.test(e[t].toString()))
+            {
+                newJson[t] = parseFloat(e[t]);
+            }
+            else if (regex_int.test(e[t].toString()))
+            {
+                newJson[t] = parseInt(e[t]);
+            }
+            else
+            {
+                newJson[t] = e[t];
+            }
+        }
+        return newJson;
     },
     defalut:null
 }
 
-//ÖØĞ´$.ajax
+//é‡å†™$.ajax
 var g_ajax = $.ajax;
 $.ajax = function (json)
 {
@@ -61,3 +85,49 @@ $.ajax = function (json)
         success: json.success
     });
 }
+
+//åˆ†é¡µæ’ä»¶
+Vue.component("table-pages", {
+    props: {
+        action: Object
+    },
+    template: '' +
+        '<div class="col-xs-12 _pages">' +
+        '   <div class="col-sm-6 hidden-xs">' +
+        '       <h5>{{action.limit}} per, page {{action.page}}/{{action.total}}</h5>' +
+        '   </div>' +
+        '   <div class="col-sm-6 col-xs-12 text-right">' +
+        '       <ul class="pagination pagination-sm">' +
+        '           <li v-bind:class="{disabled:action.page==1}"><a href="javascript:void(0)" v-on:click="pagePrevious()">&laquo;</a></li>' +
+        '           <li v-if="action.page-2>=1"><a href="javascript:void(0)" v-on:click="pageChoose(action.page-2)">{{action.page-2}}</a></li>' +
+        '           <li v-if="action.page-1>=1"><a href="javascript:void(0)" v-on:click="pageChoose(action.page-1)">{{action.page-1}}</a></li>' +
+        '           <li class="active"><a href="javascript:void(0)" v-on:click="pageChoose(action.page)">{{action.page}}</a></li>' +
+        '           <li v-if="action.page+1<=action.total"><a href="javascript:void(0)" v-on:click="pageChoose(action.page+1)">{{action.page+1}}</a></li>' +
+        '           <li v-if="action.page+2<=action.total"><a href="javascript:void(0)" v-on:click="pageChoose(action.page+2)">{{action.page+2}}</a></li>' +
+        '           <li v-bind:class="{disabled:action.page==action.total}"><a href="javascript:void(0)" v-on:click="pageNext()">&raquo;</a></li>' +
+        '       </ul>' +
+        '   </div>' +
+        '</div>' +
+        '',
+    methods: {
+        pagePrevious: function ()
+        {
+            if (this.action.page == 1)
+                return;
+            this.action.page -= 1;
+            this.$emit('pagechange')
+        },
+        pageChoose: function (page)
+        {
+            this.action.page = page;
+            this.$emit('pagechange')
+        },
+        pageNext: function ()
+        {
+            if (this.action.page == this.action.total)
+                return;
+            this.action.page += 1;
+            this.$emit('pagechange')
+        }
+    }
+})

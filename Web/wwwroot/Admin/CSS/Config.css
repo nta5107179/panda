@@ -8,10 +8,9 @@
 ._content{padding:15px 0; background-color:#fff; margin:0; border-top:3px solid #ccc;}
 
 /*表格列表*/
-._tablelist{padding-bottom:65px;}
+._tablelist{padding-bottom:60px;}
 	._tablelist ._list{height:100%;}
 		._tablelist ._list ._box{height:100%; overflow:auto;}
 			._tablelist ._list ._box table{margin:0; max-width:none;}
-	._tablelist ._pages{margin-top:15px;}
-		._tablelist ._pages h5{float:left;}
-		._tablelist ._pages ul{margin:0; float:right;}
+	._tablelist ._pages{margin-top:15px; padding:0;}
+		._tablelist ._pages ul{margin:0;}
