@@ -18,31 +18,6 @@ var static = {
         }
         return arr.join("&");
     },
-    oldBoxWidth: 0,
-    newBoxWidth: 0,
-    setTableStyle: function (variable_value)
-	{
-        var thList = $(".table thead tr th");
-        var widthSum = 0;
-        var _variable_value = variable_value; //可变宽度最小值
-        for (var i = 0; i < thList.length; i++)
-        {
-            if (thList[i].style.width != "auto")
-                widthSum += parseInt(thList[i].style.width.replace("px"));
-        }
-        static.newBoxWidth = $("#app ._list ._box").width();
-        if ((static.oldBoxWidth != 0 && static.oldBoxWidth > static.newBoxWidth && static.newBoxWidth < widthSum + _variable_value) || (static.oldBoxWidth == 0 && static.newBoxWidth < widthSum + _variable_value))
-        {
-            $(".table").css("width", "-webkit-max-content");
-            $("#_variable_th").css("width", _variable_value);
-        }
-        else if ((static.oldBoxWidth != 0 && static.oldBoxWidth < static.newBoxWidth && static.newBoxWidth >= widthSum) || (static.oldBoxWidth == 0 && static.newBoxWidth >= widthSum))
-        {
-            $(".table").css("width", "100%");
-            $("#_variable_th").css("width", "auto");
-        }
-        static.oldBoxWidth = static. newBoxWidth
-    },
     isEmptyJson:function (e) {
         var t;
         for (t in e)
@@ -71,6 +46,15 @@ var static = {
         }
         return newJson;
     },
+    loading: function (type)
+    {
+        $("#modal_loading").modal(type);
+    },
+    alert: function (msg)
+    {
+        $("#modal_alert ").find(".modal-body").html(msg);
+        $("#modal_alert").modal("show");
+    },
     defalut:null
 }
 
@@ -82,7 +66,8 @@ $.ajax = function (json)
         type: json.type,
         url: json.url,
         data: static.getAction(json.data) + "&__RequestVerificationToken=" + $("input[name=__RequestVerificationToken]").val(),
-        success: json.success
+        success: json.success,
+        error: json.error
     });
 }
 
@@ -130,4 +115,42 @@ Vue.component("table-pages", {
             this.$emit('pagechange')
         }
     }
+})
+
+//载入模态窗插件
+Vue.component("modal-loading", {
+    template: '' +
+        '<div class="modal fade" id="modal_loading" tabindex="-1" role="dialog" data-backdrop="false">' +
+        '    <div class="modal-dialog">' +
+        '        <div class="modal-content">' +
+        '            <div class="modal-header">' +
+        '                <h4 class="modal-title">消息提示</h4>' +
+        '            </div>' +
+        '            <div class="modal-body">正在载入，请稍后...</div>' +
+        '            <div class="modal-footer">' +
+        '                <i class="fa fa-spinner fa-pulse"></i>' +
+        '            </div>' +
+        '        </div>' +
+        '    </div>' +
+        '</div>' +
+        ''
+})
+
+//消息模态窗插件
+Vue.component("modal-alert", {
+    template: '' +
+        '<div class="modal fade" id="modal_alert" tabindex="-1" role="dialog" data-backdrop="false">' +
+        '    <div class="modal-dialog">' +
+        '        <div class="modal-content">' +
+        '            <div class="modal-header">' +
+        '                <h4 class="modal-title">消息提示</h4>' +
+        '            </div>' +
+        '            <div class="modal-body"></div>' +
+        '            <div class="modal-footer">' +
+        '                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>' +
+        '            </div>' +
+        '        </div>' +
+        '    </div>' +
+        '</div>' +
+        ''
 })

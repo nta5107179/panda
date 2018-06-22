@@ -24,12 +24,12 @@ namespace Web.Pages.Admin
 			string a_uname = Request.Form["a_uname"];
 			string a_pwd = Request.Form["a_pwd"];
 			string isremember = Request.Form["isremember"];
-			List<string> list = new List<string>() { a_uname, a_pwd };
+			List<string> query = new List<string>() { a_uname, a_pwd };
 
-			if (!m_incAdmin.OpString.DecideNull(list.ToArray()))
+			if (!m_incAdmin.OpString.DecideNull(query.ToArray()))
 			{
-				list.Add(isremember);
-				if (!m_incAdmin.OpString.DetectSql(list.ToArray()))
+				query.Add(isremember);
+				if (!m_incAdmin.OpString.DetectSql(query.ToArray()))
 				{
 					if (m_incAdmin.Login(a_uname, a_pwd, string.IsNullOrEmpty(isremember)? false : bool.Parse(isremember)))
 					{

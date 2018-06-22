@@ -655,7 +655,7 @@ namespace CoreClass
 		/// </summary>
 		/// <param name="dt">DataTable对象</param>
 		/// <returns></returns>
-		public JArray ToJson(DataTable dt)
+		public JArray ToJsonArray(DataTable dt)
 		{
 			JArray jarr = new JArray();
 			DataColumnCollection dcc = dt.Columns;
@@ -675,7 +675,7 @@ namespace CoreClass
 		/// </summary>
 		/// <param name="ds">DataSet</param>
 		/// <returns></returns>
-		public JArray ToJson(DataSet ds)
+		public JArray ToJsonArray(DataSet ds)
 		{
 			JArray jarrDS = new JArray();
 			for (int k = 0; k < ds.Tables.Count; k++)
@@ -719,7 +719,7 @@ namespace CoreClass
 		/// </summary>
 		/// <param name="list">object实体列表对象</param>
 		/// <returns></returns>
-		public JArray ToJson(List<object> list)
+		public JArray ToJsonArray(List<object> list)
 		{
 			JArray jarr = new JArray();
 			foreach (object obj in list)

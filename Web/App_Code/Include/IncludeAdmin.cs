@@ -11,11 +11,14 @@ namespace Web.App_Code.Include
 {
     public class IncludeAdmin : AppCode
 	{
+		Factory m_factory = new Factory();
+		GetModelList m_gml = new GetModelList();
+
 		/*
-	===========================================
-	全局Cookie
-	===========================================
-	*/
+		===========================================
+		全局Cookie
+		===========================================
+		*/
 		#region 全局Cookie
 		/// <summary>
 		/// 添加管理员登录Cookie
@@ -119,6 +122,61 @@ namespace Web.App_Code.Include
 		public void unLogin()
 		{
 			RemoveCookie_Login();
+		}
+		#endregion
+		/*
+		===========================================
+		信息类型模块
+		===========================================
+		*/
+		#region 信息类型模块
+		/// <summary>
+		/// 获取信息类型列表
+		/// </summary>
+		/// <returns></returns>
+		public List<Models> GetNewsTypeList(string page, string limit, ref long total, string nt_name, string nt_pid, string nt_examine)
+		{
+			List<Models> list = new List<Models>();
+			DataSet ds = null;
+			OpSql.Open();
+			try
+			{
+				string where = "";
+				if (!string.IsNullOrEmpty(nt_name))
+				{
+					where += string.Format(" and nt_name like '%{0}%'", nt_name);
+				}
+				if (!string.IsNullOrEmpty(nt_pid))
+				{
+					where += string.Format(" and nt_pid = {0}", nt_pid);
+				}
+				if (!string.IsNullOrEmpty(nt_examine))
+				{
+					where += string.Format(" and nt_examine = {0}", nt_examine);
+				}
+				string sql = string.Format(@"
+select * from g_newstype
+where 1=1{2}
+order by nt_pid asc, nt_top desc, nt_id asc
+limit {0},{1};
+select CAST(FOUND_ROWS() as SIGNED) as total;
+                    ", (int.Parse(page) - 1) * int.Parse(limit), int.Parse(limit), where);
+				ds = OpSql.Select(sql);
+				if (ds != null && ds.Tables.Count > 0)
+				{
+					List<g_newstype> list1 = m_gml.g_newstype(ds.Tables[0]);
+					for (int i = 0; i < list1.Count; i++)
+					{
+						Models mod = new Models();
+						mod.g_newstype = list1[i];
+						list.Add(mod);
+					}
+					total = (long)ds.Tables[1].Rows[0]["total"];
+				}
+			}
+			catch { }
+			finally { OpSql.Close(); }
+			return list;
 		}
 		#endregion
 	}

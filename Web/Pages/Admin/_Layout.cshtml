@@ -44,7 +44,7 @@
 <div class="wrapper">
 	<header class="main-header" id="main-header">
 		<!-- Logo -->
-		<a href="index2.html" class="logo">
+		<a href="index2.html" class="logo hidden-xs">
 			<!-- mini logo for sidebar mini 50x50 pixels -->
 			<span class="logo-mini"><b>P</b>A</span>
 			<!-- logo for regular state and mobile devices -->
@@ -123,7 +123,7 @@
 	<div class="content-wrapper" id="content-wrapper">
 		<!-- Content Header (Page header) -->
 		<section class="content-header" id="content-header">
-			<h1>
+			<h1 class="hidden-xs">
 				@ViewData["Title"]
 			</h1>
 			<ol class="breadcrumb">
@@ -149,7 +149,7 @@
 			function setAppAdaptive()
 			{
 				//alert($("#content-wrapper").innerHeight())
-				$("#app").css("height", $(window).height() - ($(window).width() < 768 ? 100 : 50) - $("#content-header").outerHeight() - 30)
+				$("#variable_area").css("height", $(window).height() - 50 - $("#content-header").outerHeight() - 30 - $("#variable_area").prevAll().outerHeight())
 			}
 		</script>
 		<!-- /.content -->

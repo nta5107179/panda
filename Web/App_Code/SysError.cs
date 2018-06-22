@@ -47,7 +47,7 @@ public static class SysError
 			//修改
 			dic.Add("EDIT000", "修改成功！");
 			dic.Add("EDIT001", "服务器繁忙，请稍后再试！");
-			// 删除
+			//删除
 			dic.Add("DEL000", "删除成功！");
 			dic.Add("DEL001", "服务器繁忙，请稍后再试！");
 			dic.Add("DEL002", "未选定任何项，删除失败！");
