@@ -81,64 +81,65 @@
 		el: "#app",
 		data: {
 			post: {
-				
+
 			}
 		},
+		mounted: function ()
+		{
+			this.setRemember();
+			this.login();
+		},
 		watch: {
-			"post.isremember": function()
+			"post.isremember": function ()
 			{
-				setRemember();
+				this.setRemember();
+			}
+		},
+		methods: {
+			//设置记住按钮状态
+			setRemember: function ()
+			{
+				if (this.post.isremember)
+				{
+					$("#remember").removeClass("fa-square-o");
+					$("#remember").addClass("fa-check-square-o text-blue");
+				}
+				else
+				{
+					$("#remember").removeClass("fa-check-square-o text-blue");
+					$("#remember").addClass("fa-square-o");
+				}
+			},
+			//登录
+			login: function ()
+			{
+				$("#form_login").submit(function ()
+				{
+					$(this).attr("disabled", true);
+					$.ajax({
+						type: "post",
+						url: "?handler=Login",
+						data: vm.post,
+						success: function (res)
+						{
+							var json = eval("(" + res + ")");
+							if (json.error)
+							{
+								static.alert(json.error);
+							}
+							else
+							{
+								location.href = "index";
+							}
+							$("#login").attr("disabled", false);
+						}
+					});
+					return false;
+				});
 			}
 		}
 	});
-	$(function ()
-	{
-		//默认执行函数
-		setRemember();
-		login();
-	});
-
-	//设置记住按钮状态
-	function setRemember()
-	{
-		if (vm.post.isremember)
-		{
-			$("#remember").removeClass("fa-square-o");
-			$("#remember").addClass("fa-check-square-o text-blue");
-		}
-		else
-		{
-			$("#remember").removeClass("fa-check-square-o text-blue");
-			$("#remember").addClass("fa-square-o");
-		}
-	}
-	//登录
-	function login()
-	{
-		$("#form_login").submit(function ()
-		{
-			$(this).attr("disabled", true);
-			$.ajax({
-				type: "post",
-				url: "?handler=Login",
-				data: vm.post,
-				success: function (res)
-				{
-					var json = eval("(" + res + ")");
-					if (json.error)
-					{
-						static.alert(json.error);
-					}
-					else
-					{
-						location.href = "index";
-					}
-					$("#login").attr("disabled", false);
-				}
-			});
-			return false;
-		});
-	}
+	
 </script>
 </body>
 </html>

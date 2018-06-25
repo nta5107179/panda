@@ -52,7 +52,7 @@ public static class SysError
 			dic.Add("DEL001", "服务器繁忙，请稍后再试！");
 			dic.Add("DEL002", "未选定任何项，删除失败！");
 			//查询
-			dic.Add("SELECT001", "服务器繁忙，请稍后再试！");
+			dic.Add("SELECT001", "没有更多数据！");
 		}
 	}
 	/// <summary>

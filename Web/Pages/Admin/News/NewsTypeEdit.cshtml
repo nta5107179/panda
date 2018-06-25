@@ -1,0 +1,112 @@
+﻿@page
+@model NewsTypeEditModel
+@{
+	Layout = "~/Pages/Admin/_Layout.cshtml";
+	ViewData["Title"] = "分类添加";
+}
+<div class="row _content" id="app">
+	<div class="col-xs-12" id="variable_area">
+		<div class="row _form">
+			<div class="col-xs-12 _list">
+				<div class="_box">
+					<form class="form-horizontal">
+						<div class="col-xs-12">
+							<div class="form-group form-group-sm">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">名称</label>
+								<div class="col-md-5 col-sm-7 col-xs-9">
+									<input type="text" class="form-control" v-model="post.nt_name" placeholder="请输入名称">
+								</div>
+								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+							</div>
+						</div>
+						<div class="col-xs-12">
+							<div class="form-group form-group-sm">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">父类型</label>
+								<div class="col-md-5 col-sm-7 col-xs-9">
+									<select-tree v-model="post.nt_pid" v-bind:list="newstypelist"></select-tree>
+								</div>
+								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="col-xs-12 _buts">
+				<div class="col-xs-12 text-right">
+					<button type="button" class="btn btn-primary btn-sm" v-on:click="save">提交按钮</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<modal-loading></modal-loading>
+	<modal-alert></modal-alert>
+</div>
+
+<script>
+	const router = new VueRouter()
+	var vm = new Vue({
+		router: router,
+		el: '#app',
+		data: {
+			filter: { nt_id: 0 },
+			post: { nt_pid: "" },
+			newstypelist: @Html.Raw(Model.m_newstypelist)
+		},
+		created: function ()
+		{
+			//解析newstypelist
+			var newstypelist_copy = static.CopyJson(this.newstypelist);
+			this.newstypelist = [];
+			for (var i = 0; i < newstypelist_copy.length; i++)
+			{
+				this.newstypelist.push({
+					id: newstypelist_copy.g_newstype.nt_id,
+					pid: newstypelist_copy.g_newstype.nt_pid,
+					name: newstypelist_copy.g_newstype.nt_name
+				});
+			}
+
+			this.pageLoad();
+		},
+		methods: {
+			pageLoad: function ()
+			{
+				//首次载入，通过url更新filter
+				if (!static.isEmptyJson(this.$route.query))
+				{
+					this.filter = static.CopyRouteQuery(this.$route.query);
+				}
+				if (!this.filter.nt_id)
+					return;
+				//读取数据
+				static.loading("show");
+				$.ajax({
+					type: "post",
+					url: "?handler=GetNewsType",
+					data: this.filter,
+					success: function (res)
+					{
+						var json = eval("(" + res + ")");
+						if (json.error)
+						{
+							static.alert(json.error);
+						}
+						else
+						{
+							vm.list = json.list;
+							vm.total = json.total;
+						}
+						static.loading("hide")
+					}
+				});
+			},
+			save: function ()
+			{
+				console.log(this.post)
+			}
+		}
+	});
+
+
+</script>

@@ -12,7 +12,7 @@
 					<div class="form-group form-group-sm">
 						<label for="firstname" class="col-sm-4 col-xs-3 control-label">名称</label>
 						<div class="col-sm-8 col-xs-9">
-							<input type="text" class="form-control" v-model="filter.nt_name" placeholder="请输入名字">
+							<input type="text" class="form-control" v-model="filter.nt_name" placeholder="请输入名称">
 						</div>
 					</div>
 				</div>
@@ -20,8 +20,10 @@
 					<div class="form-group form-group-sm">
 						<label for="firstname" class="col-sm-4 col-xs-3 control-label">父类型</label>
 						<div class="col-sm-8 col-xs-9">
-							<select class="form-control" v-model="filter.nt_pid">
+							<select class="form-control" v-model.number="filter.nt_pid">
 								<option value="">--请选择--</option>
+								<option value="0">顶级类型</option>
+								<option v-for="el in newstypelist" v-bind:value="el.g_newstype.nt_id">{{el.g_newstype.nt_name}}</option>
 							</select>
 						</div>
 					</div>
@@ -41,6 +43,7 @@
 				<div class="col-xs-12 text-right">
 					<div class="form-group">
 						<div class="col-xs-12">
+							<button type="button" class="btn btn-success btn-sm" v-on:click="add">添加按钮</button>
 							<button type="button" class="btn btn-primary btn-sm" v-on:click="search">搜索按钮</button>
 						</div>
 					</div>
@@ -64,27 +67,19 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>Tanmay</td>
-								<td>BangaloreBangaloreBangaloreBangalore</td>
-								<td>560001</td>
-								<td>2</td>
-								<td>3</td>
-								<td><a href="#">修改</a> | <a href="#">删除</a></td>
-							</tr>
-							<tr>
-								<td>Tanmay</td>
-								<td>BangaloreBangaloreBangaloreBangalore</td>
-								<td>560001</td>
-								<td>2</td>
-								<td>3</td>
+							<tr v-for="el in list">
+								<td>{{el.g_newstype.nt_id}}</td>
+								<td>{{el.g_newstype.nt_name}}</td>
+								<td>{{el.g_newstype.nt_pname}}</td>
+								<td>{{el.g_newstype.nt_top}}</td>
+								<td>{{el.g_newstype.nt_examine?"是":"否"}}</td>
 								<td><a href="#">修改</a> | <a href="#">删除</a></td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
-			<table-pages v-bind:action="filter" v-on:pagechange="search()"></table-pages>
+			<table-pages v-bind:action="filter" v-bind:total="total" v-on:pagechange="search"></table-pages>
 		</div>
 	</div>
 
@@ -100,16 +95,17 @@
 		data: {
 			filter: {
 				page: 1,
-				limit: 25,
-				total: 10,
-				nt_name: "",
+				limit: 20,
 				nt_examine: "",
 				nt_pid:""
-			}
+			},
+			list: [],
+			total: 0,
+			newstypelist: @Html.Raw(Model.m_newstypelist)
 		},
-		mounted: function ()
+		created: function ()
 		{
-			setTimeout(this.pageLoad, 100);
+			this.pageLoad();
 		},
 		watch: {
 			$route: "pageLoad"
@@ -117,6 +113,7 @@
 		methods: {
 			pageLoad: function (to, from)
 			{
+				//首次载入，通过url更新filter
 				if (!static.isEmptyJson(this.$route.query))
 				{
 					this.filter = static.CopyRouteQuery(this.$route.query);
@@ -126,7 +123,7 @@
 				$.ajax({
 					type: "post",
 					url: "?handler=GetNewsTypeList",
-					data: vm.filter,
+					data: this.filter,
 					success: function (res)
 					{
 						var json = eval("(" + res + ")");
@@ -137,6 +134,7 @@
 						else
 						{
 							vm.list = json.list;
+							vm.total = json.total;
 						}
 						static.loading("hide")
 					}
@@ -144,7 +142,11 @@
 			},
 			search: function ()
 			{
-				router.push({ query: vm.filter })
+				router.push({ query: this.filter })
+			},
+			add: function ()
+			{
+				location.href = "newstypeedit";
 			}
 		}
 	});

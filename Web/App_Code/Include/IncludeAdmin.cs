@@ -134,6 +134,37 @@ namespace Web.App_Code.Include
 		/// 获取信息类型列表
 		/// </summary>
 		/// <returns></returns>
+		public List<Models> GetNewsTypeList()
+		{
+			List<Models> list = new List<Models>();
+			DataSet ds = null;
+			OpSql.Open();
+			try
+			{
+				string sql = string.Format(@"
+select *, null as nt_pname from g_newstype
+order by nt_pid asc, nt_top desc, nt_id asc
+                    ");
+				ds = OpSql.Select(sql);
+				if (ds != null && ds.Tables.Count > 0)
+				{
+					List<g_newstype> list1 = m_gml.g_newstype(ds.Tables[0]);
+					for (int i = 0; i < list1.Count; i++)
+					{
+						Models mod = new Models();
+						mod.g_newstype = list1[i];
+						list.Add(mod);
+					}
+				}
+			}
+			catch { }
+			finally { OpSql.Close(); }
+			return list;
+		}
+		/// <summary>
+		/// 获取信息类型列表
+		/// </summary>
+		/// <returns></returns>
 		public List<Models> GetNewsTypeList(string page, string limit, ref long total, string nt_name, string nt_pid, string nt_examine)
 		{
 			List<Models> list = new List<Models>();
@@ -144,20 +175,21 @@ namespace Web.App_Code.Include
 				string where = "";
 				if (!string.IsNullOrEmpty(nt_name))
 				{
-					where += string.Format(" and nt_name like '%{0}%'", nt_name);
+					where += string.Format(" and t1.nt_name like '%{0}%'", nt_name);
 				}
 				if (!string.IsNullOrEmpty(nt_pid))
 				{
-					where += string.Format(" and nt_pid = {0}", nt_pid);
+					where += string.Format(" and t1.nt_pid = {0}", nt_pid);
 				}
 				if (!string.IsNullOrEmpty(nt_examine))
 				{
-					where += string.Format(" and nt_examine = {0}", nt_examine);
+					where += string.Format(" and t1.nt_examine = {0}", nt_examine);
 				}
 				string sql = string.Format(@"
-select * from g_newstype
+select SQL_CALC_FOUND_ROWS t1.*,ifnull(t2.nt_name, '-') as nt_pname from g_newstype as t1
+left join g_newstype as t2 on t1.nt_pid=t2.nt_id
 where 1=1{2}
-order by nt_pid asc, nt_top desc, nt_id asc
+order by t1.nt_pid asc, t1.nt_top desc, t1.nt_id asc
 limit {0},{1};
 select CAST(FOUND_ROWS() as SIGNED) as total;
                     ", (int.Parse(page) - 1) * int.Parse(limit), int.Parse(limit), where);
@@ -172,6 +204,37 @@ select CAST(FOUND_ROWS() as SIGNED) as total;
 						list.Add(mod);
 					}
 					total = (long)ds.Tables[1].Rows[0]["total"];
+				}
+			}
+			catch { }
+			finally { OpSql.Close(); }
+			return list;
+		}
+		/// <summary>
+		/// 获取信息类型
+		/// </summary>
+		/// <returns></returns>
+		public List<Models> GetNewsType(string nt_id)
+		{
+			List<Models> list = new List<Models>();
+			DataSet ds = null;
+			OpSql.Open();
+			try
+			{
+				string sql = string.Format(@"
+select *, null as nt_pname from g_newstype
+where nt_id={0}
+                    ", nt_id);
+				ds = OpSql.Select(sql);
+				if (ds != null && ds.Tables.Count > 0)
+				{
+					List<g_newstype> list1 = m_gml.g_newstype(ds.Tables[0]);
+					for (int i = 0; i < list1.Count; i++)
+					{
+						Models mod = new Models();
+						mod.g_newstype = list1[i];
+						list.Add(mod);
+					}
 				}
 			}
 			catch { }

@@ -133,8 +133,8 @@
 		</section>
 		<!-- Main content -->
 		<section class="content">
-			@RenderBody()
 			@Html.AntiForgeryToken()
+			@RenderBody()
 		</section>
 		<script>
 			//设置内容区域自适应

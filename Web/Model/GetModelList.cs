@@ -67,6 +67,7 @@ namespace Model
 					model.nt_pid = (int)dt.Rows[n]["nt_pid"];
 				}
 				catch { }
+				model.nt_pname = dt.Rows[n]["nt_pname"].ToString();
 				model.nt_name = dt.Rows[n]["nt_name"].ToString();
 				try
 				{

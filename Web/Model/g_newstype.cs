@@ -12,6 +12,7 @@ namespace Model
 		#region Model
 		private int? _nt_id;
 		private int? _nt_pid;
+		private string _nt_pname;
 		private string _nt_name;
 		private int? _nt_top;
         private bool? _nt_examine;
@@ -31,6 +32,14 @@ namespace Model
 		{
 			set { _nt_pid = value; }
 			get { return _nt_pid; }
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		public string nt_pname
+		{
+			set { _nt_pname = value; }
+			get { return _nt_pname; }
 		}
 		/// <summary>
 		/// 

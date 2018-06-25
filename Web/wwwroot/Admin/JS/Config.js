@@ -46,6 +46,15 @@ var static = {
         }
         return newJson;
     },
+    CopyJson: function (json)
+    {
+        var copy_json = {};
+        for (key in json)
+        {
+            copy_json[key] = json[key];
+        }
+        return copy_json;
+    },
     loading: function (type)
     {
         $("#modal_loading").modal(type);
@@ -74,12 +83,13 @@ $.ajax = function (json)
 //分页插件
 Vue.component("table-pages", {
     props: {
-        action: Object
+        action: Object,
+        total: Number,
     },
     template: '' +
         '<div class="col-xs-12 _pages">' +
         '   <div class="col-sm-6 hidden-xs">' +
-        '       <h5>{{action.limit}} per, page {{action.page}}/{{action.total}}</h5>' +
+        '       <h5>{{action.limit}} per, page {{action.page}}/{{total}}</h5>' +
         '   </div>' +
         '   <div class="col-sm-6 col-xs-12 text-right">' +
         '       <ul class="pagination pagination-sm">' +
@@ -87,9 +97,9 @@ Vue.component("table-pages", {
         '           <li v-if="action.page-2>=1"><a href="javascript:void(0)" v-on:click="pageChoose(action.page-2)">{{action.page-2}}</a></li>' +
         '           <li v-if="action.page-1>=1"><a href="javascript:void(0)" v-on:click="pageChoose(action.page-1)">{{action.page-1}}</a></li>' +
         '           <li class="active"><a href="javascript:void(0)" v-on:click="pageChoose(action.page)">{{action.page}}</a></li>' +
-        '           <li v-if="action.page+1<=action.total"><a href="javascript:void(0)" v-on:click="pageChoose(action.page+1)">{{action.page+1}}</a></li>' +
-        '           <li v-if="action.page+2<=action.total"><a href="javascript:void(0)" v-on:click="pageChoose(action.page+2)">{{action.page+2}}</a></li>' +
-        '           <li v-bind:class="{disabled:action.page==action.total}"><a href="javascript:void(0)" v-on:click="pageNext()">&raquo;</a></li>' +
+        '           <li v-if="action.page+1<=Math.ceil(total/action.limit)"><a href="javascript:void(0)" v-on:click="pageChoose(action.page+1)">{{action.page+1}}</a></li>' +
+        '           <li v-if="action.page+2<=Math.ceil(total/action.limit)"><a href="javascript:void(0)" v-on:click="pageChoose(action.page+2)">{{action.page+2}}</a></li>' +
+        '           <li v-bind:class="{disabled:action.page==Math.ceil(total/action.limit) || this.total==0}"><a href="javascript:void(0)" v-on:click="pageNext()">&raquo;</a></li>' +
         '       </ul>' +
         '   </div>' +
         '</div>' +
@@ -109,9 +119,33 @@ Vue.component("table-pages", {
         },
         pageNext: function ()
         {
-            if (this.action.page == this.action.total)
+            if (this.action.page == Math.ceil(this.total / this.action.limit) || this.total==0)
                 return;
             this.action.page += 1;
+            this.$emit('pagechange')
+        }
+    }
+})
+
+//树状select组件
+Vue.component("select-tree", {
+    props: {
+        value: String,
+        list: Array
+    },
+    template: '' +
+        '<select class="form-control" v-model.number="value">' +
+        '	<option value="">--请选择--</option>' +
+        '	<option value="0">顶级类型</option>' +
+        '	<option v-for="el in list" v-bind:value="el.id">{{el.name}}</option>' +
+        '</select>' +
+        '',
+    methods: {
+        pagePrevious: function ()
+        {
+            if (this.action.page == 1)
+                return;
+            this.action.page -= 1;
             this.$emit('pagechange')
         }
     }

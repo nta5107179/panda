@@ -27,6 +27,13 @@
 /*查找*/
 ._search{margin-bottom:15px; background-color:#fff; border-top:3px solid #dd4b39; border-radius:3px; padding-top:15px; max-height:108px; overflow:auto;}
 
-
+/*表单*/
+._form{padding-bottom:60px; height:100%; padding-top:15px; background-color:#fff; border-top:3px solid #3c8dbc; border-radius:3px;}
+	._form ._list{height:100%;}
+		._form ._list ._box{height:100%; width:100%; overflow:auto;}
+			._form ._list ._box table{margin:0; max-width:none;}
+			._form ._list ._box table thead > tr > th,
+			._form ._list ._box table tbody > tr > td{white-space: nowrap;}
+	._form ._buts{margin-top:15px; padding:0;}
 
 
