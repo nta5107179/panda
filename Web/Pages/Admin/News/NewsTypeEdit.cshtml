@@ -51,22 +51,10 @@
 		data: {
 			filter: { nt_id: 0 },
 			post: { nt_pid: "" },
-			newstypelist: @Html.Raw(Model.m_newstypelist)
+			newstypelist: project.newstypelist_to_treelist(@Html.Raw(Model.m_newstypelist))
 		},
 		created: function ()
 		{
-			//解析newstypelist
-			var newstypelist_copy = static.CopyJson(this.newstypelist);
-			this.newstypelist = [];
-			for (var i = 0; i < newstypelist_copy.length; i++)
-			{
-				this.newstypelist.push({
-					id: newstypelist_copy.g_newstype.nt_id,
-					pid: newstypelist_copy.g_newstype.nt_pid,
-					name: newstypelist_copy.g_newstype.nt_name
-				});
-			}
-
 			this.pageLoad();
 		},
 		methods: {

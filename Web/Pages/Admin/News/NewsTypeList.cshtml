@@ -20,11 +20,7 @@
 					<div class="form-group form-group-sm">
 						<label for="firstname" class="col-sm-4 col-xs-3 control-label">父类型</label>
 						<div class="col-sm-8 col-xs-9">
-							<select class="form-control" v-model.number="filter.nt_pid">
-								<option value="">--请选择--</option>
-								<option value="0">顶级类型</option>
-								<option v-for="el in newstypelist" v-bind:value="el.g_newstype.nt_id">{{el.g_newstype.nt_name}}</option>
-							</select>
+							<select-tree v-model="filter.nt_pid" v-bind:list="newstypelist"></select-tree>
 						</div>
 					</div>
 				</div>
@@ -101,7 +97,7 @@
 			},
 			list: [],
 			total: 0,
-			newstypelist: @Html.Raw(Model.m_newstypelist)
+			newstypelist: project.newstypelist_to_treelist(@Html.Raw(Model.m_newstypelist))
 		},
 		created: function ()
 		{

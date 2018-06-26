@@ -26,7 +26,7 @@ var static = {
     },
     CopyRouteQuery: function (e)
     {
-        var newJson = {};
+        /*var newJson = {};
         var regex_float = new RegExp(/^\d+\.\d+$/)
         var regex_int = new RegExp(/^\d+$/)
         for (t in e)
@@ -44,16 +44,12 @@ var static = {
                 newJson[t] = e[t];
             }
         }
-        return newJson;
+        return newJson;*/
+        return JSON.parse(JSON.stringify(e));
     },
     CopyJson: function (json)
     {
-        var copy_json = {};
-        for (key in json)
-        {
-            copy_json[key] = json[key];
-        }
-        return copy_json;
+        return JSON.parse(JSON.stringify(json));
     },
     loading: function (type)
     {
@@ -65,6 +61,24 @@ var static = {
         $("#modal_alert").modal("show");
     },
     defalut:null
+}
+
+//项目专用方法
+var project = {
+    newstypelist_to_treelist: function (newstypelist)
+    {
+        //解析newstypelist
+        var newstypelist_t = [];
+        for (var i = 0; i < newstypelist.length; i++)
+        {
+            newstypelist_t.push({
+                id: newstypelist[i].g_newstype.nt_id,
+                pid: newstypelist[i].g_newstype.nt_pid,
+                name: newstypelist[i].g_newstype.nt_name
+            });
+        }
+        return newstypelist_t;
+    }
 }
 
 //重写$.ajax
@@ -85,6 +99,11 @@ Vue.component("table-pages", {
     props: {
         action: Object,
         total: Number,
+    },
+    created: function ()
+    {
+        this.action.page = Number(this.action.page);
+        this.action.limit = Number(this.action.limit);
     },
     template: '' +
         '<div class="col-xs-12 _pages">' +
@@ -128,25 +147,97 @@ Vue.component("table-pages", {
 })
 
 //树状select组件
+//list:[{id:,name:,pid:}]
 Vue.component("select-tree", {
     props: {
         value: String,
         list: Array
     },
+    data: function ()
+    {
+        return {
+            value_in: this.value,
+            list_in: []
+        }
+    },
+    watch: {
+        list: function ()
+        {
+            this.init();
+        },
+        value: function ()
+        {
+            this.selected();
+        },
+        value_in: function ()
+        {
+            this.changed();
+        }
+    },
+    created: function ()
+    {
+        this.init();
+    },
     template: '' +
-        '<select class="form-control" v-model.number="value">' +
+        '<select class="form-control" v-model="value_in">' +
         '	<option value="">--请选择--</option>' +
         '	<option value="0">顶级类型</option>' +
-        '	<option v-for="el in list" v-bind:value="el.id">{{el.name}}</option>' +
+        '	<option v-for="el in list_in" v-bind:value="el.id">{{el.name}}</option>' +
         '</select>' +
         '',
     methods: {
-        pagePrevious: function ()
+        selected: function ()
         {
-            if (this.action.page == 1)
-                return;
-            this.action.page -= 1;
-            this.$emit('pagechange')
+            this.value_in = this.value;
+        },
+        changed: function ()
+        {
+            this.$emit('input', this.value_in.toString())
+        },
+        init: function ()
+        {
+            var sortout = function (list_in, list_t)
+            {
+                for (var i = list_t.length - 1; i >= 0; i--)
+                {
+                    if (list_t[i].pid == 0)
+                    {
+                        list_t[i].lv = 1;
+                        var name = "";
+                        for (var k = 0; k < list_t[i].lv; k++)
+                        {
+                            name += "├　";
+                        }
+                        list_t[i].name = name + list_t[i].name;
+                        list_in.splice(0, 0, list_t[i]);
+                        list_t.splice(i, 1);
+                    }
+                    else
+                    {
+                        for (var j = list_in.length - 1; j >= 0; j--)
+                        {
+                            if (list_t[i].pid == list_in[j].id)
+                            {
+                                list_t[i].lv = list_in[j].lv + 1;
+                                var name = "";
+                                for (var k = 0; k < list_t[i].lv; k++)
+                                {
+                                    name += "├　";
+                                }
+                                list_t[i].name = name + list_t[i].name;
+                                list_in.splice(j+1, 0, list_t[i]);
+                                list_t.splice(i, 1);
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (list_t.length > 0)
+                {
+                    sortout(list_in, list_t);
+                }
+            }
+            sortout(this.list_in, static.CopyJson(this.list));
         }
     }
 })
