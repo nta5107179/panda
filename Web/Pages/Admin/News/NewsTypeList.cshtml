@@ -2,7 +2,6 @@
 @model NewsTypeListModel
 @{
 	Layout = "~/Pages/Admin/_Layout.cshtml";
-	ViewData["Title"] = "分类列表";
 }
 <div class="row _content" id="app">
 	<div class="col-xs-12">
@@ -29,9 +28,9 @@
 						<label for="firstname" class="col-sm-4 col-xs-3 control-label">审核</label>
 						<div class="col-sm-8 col-xs-9">
 							<select class="form-control" v-model="filter.nt_examine">
-								<option value="">--请选择--</option>
-								<option value="1">是</option>
-								<option value="0">否</option>
+								<option v-bind:value="null">--请选择--</option>
+								<option v-bind:value="true">是</option>
+								<option v-bind:value="false">否</option>
 							</select>
 						</div>
 					</div>
@@ -69,7 +68,10 @@
 								<td>{{el.g_newstype.nt_pname}}</td>
 								<td>{{el.g_newstype.nt_top}}</td>
 								<td>{{el.g_newstype.nt_examine?"是":"否"}}</td>
-								<td><a href="#">修改</a> | <a href="#">删除</a></td>
+								<td>
+									<a v-bind:href="'newstypeedit#/?nt_id=' + el.g_newstype.nt_id">修改</a> |
+									<a href="javascript:void(0);" v-on:click="del">删除</a>
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -92,8 +94,8 @@
 			filter: {
 				page: 1,
 				limit: 20,
-				nt_examine: "",
-				nt_pid:""
+				nt_examine: null,
+				nt_pid:null
 			},
 			list: [],
 			total: 0,
@@ -112,8 +114,9 @@
 				//首次载入，通过url更新filter
 				if (!static.isEmptyJson(this.$route.query))
 				{
-					this.filter = static.CopyRouteQuery(this.$route.query);
+					this.filter = static.CopyJson(this.$route.query);
 				}
+				content_header.title = "分类列表"
 				//读取数据
 				static.loading("show");
 				$.ajax({
@@ -143,6 +146,10 @@
 			add: function ()
 			{
 				location.href = "newstypeedit";
+			},
+			del: function ()
+			{
+				alert(0)
 			}
 		}
 	});

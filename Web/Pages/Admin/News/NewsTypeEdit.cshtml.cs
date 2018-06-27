@@ -34,9 +34,70 @@ namespace Web.Pages.Admin.News
 			{
 				if (!m_incAdmin.OpString.DetectSql(query.ToArray()))
 				{
-					List<Models> list = m_incAdmin.GetNewsType(nt_id);
+					Models detial = m_incAdmin.GetNewsType(nt_id);
 
-					result.Add("list", m_incAdmin.OpString.ToJsonArray(list.ToList<object>()));
+					result.Add("detial", m_incAdmin.OpString.ToJson(detial));
+				}
+				else
+				{
+					result.Add("error", SysError.GetErrorString("SYS001"));
+				}
+			}
+			else
+			{
+				result.Add("error", SysError.GetErrorString("SYS002"));
+			}
+
+			return new JsonResult(result.ToString());
+		}
+
+		public IActionResult OnPostSaveNewsType()
+		{
+			JObject result = new JObject();
+
+			string nt_id = Request.Form["nt_id"];
+			string nt_name = Request.Form["nt_name"];
+			string nt_pid = Request.Form["nt_pid"];
+			string nt_examine = Request.Form["nt_examine"];
+			List<string> query = new List<string>() { nt_name, nt_pid, nt_examine };
+
+			if (!m_incAdmin.OpString.DecideNull(query.ToArray()))
+			{
+				query.AddRange(new string[] { nt_id });
+				if (!m_incAdmin.OpString.DetectSql(query.ToArray()))
+				{
+					if (string.IsNullOrEmpty(nt_id))
+					{
+						g_newstype mod = new g_newstype();
+						mod.nt_name = nt_name;
+						mod.nt_pid = int.Parse(nt_pid);
+						mod.nt_examine = bool.Parse(nt_examine);
+						if (m_incAdmin.AddNewsType(mod))
+						{
+							result.Add("success", SysError.GetErrorString("ADD000"));
+						}
+						else
+						{
+							result.Add("error", SysError.GetErrorString("ADD001"));
+						}
+					}
+					else
+					{
+						g_newstype mod = new g_newstype();
+						mod.nt_id = int.Parse(nt_id);
+						g_newstype mod2 = new g_newstype();
+						mod2.nt_name = nt_name;
+						mod2.nt_pid = int.Parse(nt_pid);
+						mod2.nt_examine = bool.Parse(nt_examine);
+						if (m_incAdmin.EditNewsType(mod, mod2))
+						{
+							result.Add("success", SysError.GetErrorString("EDIT000"));
+						}
+						else
+						{
+							result.Add("error", SysError.GetErrorString("EDIT001"));
+						}
+					}
 				}
 				else
 				{

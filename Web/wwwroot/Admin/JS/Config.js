@@ -9,12 +9,13 @@ var static = {
         return Math.floor(Math.random() * (max - min + 1) + min);
     },
     //将json转换成url参数
-    getAction: function (json)
+    toQuery: function (json)
     {
         var arr = [];
         for (var key in json)
         {
-            arr.push(key + "=" + json[key]);
+            if (json[key] != null)
+                arr.push(key + "=" + json[key]);
         }
         return arr.join("&");
     },
@@ -23,29 +24,6 @@ var static = {
         for (t in e)
             return false;
         return true;
-    },
-    CopyRouteQuery: function (e)
-    {
-        /*var newJson = {};
-        var regex_float = new RegExp(/^\d+\.\d+$/)
-        var regex_int = new RegExp(/^\d+$/)
-        for (t in e)
-        {
-            if (regex_float.test(e[t].toString()))
-            {
-                newJson[t] = parseFloat(e[t]);
-            }
-            else if (regex_int.test(e[t].toString()))
-            {
-                newJson[t] = parseInt(e[t]);
-            }
-            else
-            {
-                newJson[t] = e[t];
-            }
-        }
-        return newJson;*/
-        return JSON.parse(JSON.stringify(e));
     },
     CopyJson: function (json)
     {
@@ -57,8 +35,31 @@ var static = {
     },
     alert: function (msg)
     {
-        $("#modal_alert ").find(".modal-body").html(msg);
+        $("#modal_alert").find(".modal-body").html(msg);
         $("#modal_alert").modal("show");
+    },
+    confrim: function (msg,obj)
+    {
+        $("#modal_confrim").find(".modal-body").html(msg);
+        $("#modal_confrim").modal("show");
+        alert(typeof (obj))
+        if (typeof (obj) == "object")
+        {
+            for (var i = 0; i < arr.length; i++)
+            {
+                $("#modal_confrim").find(".modal-footer").hrml("" +
+                    '<button type="button" class="btn btn-default">按钮1</button>' +
+                "");
+            }
+
+        }
+        else if(typeof(obj)=="function")
+        {
+            $("#modal_confrim").find(".modal-footer").hrml("" +
+                '<button type="button" class="btn btn-default">确定</button>' +
+                '<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>' +
+            "");
+        }
     },
     defalut:null
 }
@@ -88,7 +89,7 @@ $.ajax = function (json)
     g_ajax({
         type: json.type,
         url: json.url,
-        data: static.getAction(json.data) + "&__RequestVerificationToken=" + $("input[name=__RequestVerificationToken]").val(),
+        data: static.toQuery(json.data) + "&__RequestVerificationToken=" + $("input[name=__RequestVerificationToken]").val(),
         success: json.success,
         error: json.error
     });
@@ -150,7 +151,7 @@ Vue.component("table-pages", {
 //list:[{id:,name:,pid:}]
 Vue.component("select-tree", {
     props: {
-        value: String,
+        value: Number,
         list: Array
     },
     data: function ()
@@ -180,8 +181,8 @@ Vue.component("select-tree", {
     },
     template: '' +
         '<select class="form-control" v-model="value_in">' +
-        '	<option value="">--请选择--</option>' +
-        '	<option value="0">顶级类型</option>' +
+        '	<option v-bind:value="null">--请选择--</option>' +
+        '	<option v-bind:value="0">顶级类型</option>' +
         '	<option v-for="el in list_in" v-bind:value="el.id">{{el.name}}</option>' +
         '</select>' +
         '',
@@ -192,7 +193,7 @@ Vue.component("select-tree", {
         },
         changed: function ()
         {
-            this.$emit('input', this.value_in.toString())
+            this.$emit('input', this.value_in)
         },
         init: function ()
         {
@@ -273,6 +274,24 @@ Vue.component("modal-alert", {
         '            <div class="modal-body"></div>' +
         '            <div class="modal-footer">' +
         '                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>' +
+        '            </div>' +
+        '        </div>' +
+        '    </div>' +
+        '</div>' +
+        ''
+})
+
+//confrim模态窗插件
+Vue.component("modal-confrim", {
+    template: '' +
+        '<div class="modal fade" id="modal_confrim" tabindex="-1" role="dialog" data-backdrop="false">' +
+        '    <div class="modal-dialog">' +
+        '        <div class="modal-content">' +
+        '            <div class="modal-header">' +
+        '                <h4 class="modal-title">消息提示</h4>' +
+        '            </div>' +
+        '            <div class="modal-body"></div>' +
+        '            <div class="modal-footer">' +
         '            </div>' +
         '        </div>' +
         '    </div>' +

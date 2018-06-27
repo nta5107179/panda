@@ -214,9 +214,9 @@ select CAST(FOUND_ROWS() as SIGNED) as total;
 		/// 获取信息类型
 		/// </summary>
 		/// <returns></returns>
-		public List<Models> GetNewsType(string nt_id)
+		public Models GetNewsType(string nt_id)
 		{
-			List<Models> list = new List<Models>();
+			Models detial = new Models();
 			DataSet ds = null;
 			OpSql.Open();
 			try
@@ -229,17 +229,63 @@ where nt_id={0}
 				if (ds != null && ds.Tables.Count > 0)
 				{
 					List<g_newstype> list1 = m_gml.g_newstype(ds.Tables[0]);
-					for (int i = 0; i < list1.Count; i++)
+					if(list1.Count > 0)
 					{
-						Models mod = new Models();
-						mod.g_newstype = list1[i];
-						list.Add(mod);
+						detial.g_newstype = list1[0];
 					}
 				}
 			}
 			catch { }
 			finally { OpSql.Close(); }
-			return list;
+			return detial;
+		}
+		/// <summary>
+		/// 添加信息类型
+		/// </summary>
+		/// <returns></returns>
+		public bool AddNewsType(g_newstype mod)
+		{
+			bool b = false;
+			OpSql.Open();
+			try
+			{
+				b = OpSql.Insert(new object[] { mod });
+			}
+			catch { }
+			finally { OpSql.Close(); }
+			return b;
+		}
+		/// <summary>
+		/// 修改信息类型
+		/// </summary>
+		/// <returns></returns>
+		public bool EditNewsType(g_newstype mod, g_newstype mod2)
+		{
+			bool b = false;
+			OpSql.Open();
+			try
+			{
+				b = OpSql.Update(new object[] { mod }, new object[] { mod2 });
+			}
+			catch { }
+			finally { OpSql.Close(); }
+			return b;
+		}
+		/// <summary>
+		/// 删除信息类型
+		/// </summary>
+		/// <returns></returns>
+		public bool DelNewsType(g_newstype mod)
+		{
+			bool b = false;
+			OpSql.Open();
+			try
+			{
+				b = OpSql.Delete(new object[] { mod });
+			}
+			catch { }
+			finally { OpSql.Close(); }
+			return b;
 		}
 		#endregion
 	}

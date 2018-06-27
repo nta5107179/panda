@@ -124,13 +124,21 @@
 		<!-- Content Header (Page header) -->
 		<section class="content-header" id="content-header">
 			<h1 class="hidden-xs">
-				@ViewData["Title"]
+				{{title}}
 			</h1>
 			<ol class="breadcrumb">
 				<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
 				<li class="active">@ViewData["Title"]</li>
 			</ol>
 		</section>
+		<script>
+			var content_header = new Vue({
+				el: "#content-header",
+				data: {
+					title:"功能模块"
+				}
+			});
+		</script>
 		<!-- Main content -->
 		<section class="content">
 			@Html.AntiForgeryToken()

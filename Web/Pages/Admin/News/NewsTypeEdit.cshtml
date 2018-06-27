@@ -2,7 +2,6 @@
 @model NewsTypeEditModel
 @{
 	Layout = "~/Pages/Admin/_Layout.cshtml";
-	ViewData["Title"] = "分类添加";
 }
 <div class="row _content" id="app">
 	<div class="col-xs-12" id="variable_area">
@@ -28,6 +27,29 @@
 								<div class="col-md-6 col-sm-3 hidden-xs"></div>
 							</div>
 						</div>
+						<div class="col-xs-12">
+							<div class="form-group form-group-sm">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">排序</label>
+								<div class="col-md-5 col-sm-7 col-xs-9">
+									<input type="text" class="form-control" v-model="post.nt_top" placeholder="越大越靠前">
+								</div>
+								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+							</div>
+						</div>
+						<div class="col-xs-12">
+							<div class="form-group form-group-sm">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">审核</label>
+								<div class="col-md-5 col-sm-7 col-xs-9">
+									<label class="radio-inline">
+										<input type="radio" v-model="post.nt_examine" value="true"> 是
+									</label>
+									<label class="radio-inline">
+										<input type="radio" v-model="post.nt_examine" value="false"> 否
+									</label>
+								</div>
+								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+							</div>
+						</div>
 					</form>
 				</div>
 			</div>
@@ -41,6 +63,7 @@
 
 	<modal-loading></modal-loading>
 	<modal-alert></modal-alert>
+	<modal-confrim></modal-confrim>
 </div>
 
 <script>
@@ -49,8 +72,13 @@
 		router: router,
 		el: '#app',
 		data: {
-			filter: { nt_id: 0 },
-			post: { nt_pid: "" },
+			filter: {
+				nt_id: 0
+			},
+			post: {
+				nt_pid: null,
+				nt_examine: true
+			},
 			newstypelist: project.newstypelist_to_treelist(@Html.Raw(Model.m_newstypelist))
 		},
 		created: function ()
@@ -63,8 +91,9 @@
 				//首次载入，通过url更新filter
 				if (!static.isEmptyJson(this.$route.query))
 				{
-					this.filter = static.CopyRouteQuery(this.$route.query);
+					this.filter = static.CopyJson(this.$route.query);
 				}
+				content_header.title = "分类" + (!this.filter.nt_id?"添加":"修改");
 				if (!this.filter.nt_id)
 					return;
 				//读取数据
@@ -82,8 +111,7 @@
 						}
 						else
 						{
-							vm.list = json.list;
-							vm.total = json.total;
+							vm.post = json.detial.g_newstype;
 						}
 						static.loading("hide")
 					}
@@ -91,7 +119,33 @@
 			},
 			save: function ()
 			{
-				console.log(this.post)
+				static.loading("show");
+				$.ajax({
+					type: "post",
+					url: "?handler=SaveNewsType",
+					data: this.post,
+					success: function (res)
+					{
+						var json = eval("(" + res + ")");
+						if (json.error)
+						{
+							static.alert(json.error);
+						}
+						else
+						{
+							static.confrim(json.success, [{
+								title: "返回列表",
+								fct: function ()
+								{
+									location.href = "newstypelist";
+								}
+							}, {
+								title: "继续添加"
+							}]);
+						}
+						static.loading("hide")
+					}
+				});
 			}
 		}
 	});
