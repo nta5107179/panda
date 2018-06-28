@@ -70,7 +70,7 @@
 								<td>{{el.g_newstype.nt_examine?"是":"否"}}</td>
 								<td>
 									<a v-bind:href="'newstypeedit#/?nt_id=' + el.g_newstype.nt_id">修改</a> |
-									<a href="javascript:void(0);" v-on:click="del">删除</a>
+									<a href="javascript:void(0);" v-on:click="del(el.g_newstype.nt_id)">删除</a>
 								</td>
 							</tr>
 						</tbody>
@@ -83,6 +83,7 @@
 
 	<modal-loading></modal-loading>
 	<modal-alert></modal-alert>
+	<modal-confrim></modal-confrim>
 </div>
 
 <script>
@@ -147,9 +148,44 @@
 			{
 				location.href = "newstypeedit";
 			},
-			del: function ()
+			del: function (id)
 			{
-				alert(0)
+				var del_handler = function ()
+				{
+					static.loading("show");
+					$.ajax({
+						type: "post",
+						url: "?handler=DelNewsType",
+						data: { nt_id: id },
+						success: function (res)
+						{
+							var json = eval("(" + res + ")");
+							if (json.error)
+							{
+								static.alert(json.error);
+							}
+							else
+							{
+								static.alert(json.success, function ()
+								{
+									vm.pageLoad();
+								});
+							}
+							static.loading("hide")
+						}
+					});
+				}
+
+				static.confrim("确定要删除该项吗？", [{
+					title: "取消"
+				}, {
+					title: "确定",
+					handler: function ()
+					{
+						del_handler();
+					},
+					class: "btn-primary"
+				}]);
 			}
 		}
 	});

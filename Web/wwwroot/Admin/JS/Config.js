@@ -33,32 +33,63 @@ var static = {
     {
         $("#modal_loading").modal(type);
     },
-    alert: function (msg)
+    alert: function (msg, obj)
     {
         $("#modal_alert").find(".modal-body").html(msg);
         $("#modal_alert").modal("show");
+        if (typeof (obj) == "function")
+        {
+            var element = $('<button type="button" class="btn btn-default">确定</button>');
+            element.click(function ()
+            {
+                obj();
+                $("#modal_alert").modal("hide");
+            });
+            $("#modal_alert").find(".modal-footer").html(element);
+        }
+        else
+        {
+            $("#modal_alert").find(".modal-footer").html("" +
+                '<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>' +
+                "");
+        }
     },
     confrim: function (msg,obj)
     {
         $("#modal_confrim").find(".modal-body").html(msg);
         $("#modal_confrim").modal("show");
-        alert(typeof (obj))
         if (typeof (obj) == "object")
         {
-            for (var i = 0; i < arr.length; i++)
+            var html = [];
+            for (var i = 0; i < obj.length; i++)
             {
-                $("#modal_confrim").find(".modal-footer").hrml("" +
-                    '<button type="button" class="btn btn-default">按钮1</button>' +
-                "");
+                var element = null;
+                if (obj[i].handler != null)
+                {
+                    (function (i)
+                    {
+                        element = $('<button type="button" class="btn ' + (obj[i].class != null ? obj[i].class : "btn-default") + '">' + obj[i].title + '</button>');
+                        element.click(function ()
+                        {
+                            obj[i].handler();
+                            $("#modal_confrim").modal("hide");
+                        });
+                    })(i);
+                }
+                else
+                {
+                    element = $('<button type="button" class="btn ' + (obj[i].class != null ? obj[i].class : "btn-default") +'" data-dismiss="modal">' + obj[i].title + '</button>');
+                }
+                html.push(element);
             }
-
+            $("#modal_confrim").find(".modal-footer").html(html);
         }
         else if(typeof(obj)=="function")
         {
-            $("#modal_confrim").find(".modal-footer").hrml("" +
+            $("#modal_confrim").find(".modal-footer").html("" +
                 '<button type="button" class="btn btn-default">确定</button>' +
                 '<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>' +
-            "");
+                "");
         }
     },
     defalut:null
@@ -273,7 +304,6 @@ Vue.component("modal-alert", {
         '            </div>' +
         '            <div class="modal-body"></div>' +
         '            <div class="modal-footer">' +
-        '                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>' +
         '            </div>' +
         '        </div>' +
         '    </div>' +

@@ -58,5 +58,40 @@ namespace Web.Pages.Admin.News
 			return new JsonResult(result.ToString());
 		}
 
+		public IActionResult OnPostDelNewsType()
+		{
+			JObject result = new JObject();
+
+			string nt_id = Request.Form["nt_id"];
+			List<string> query = new List<string>() { nt_id };
+
+			if (!m_incAdmin.OpString.DecideNull(query.ToArray()))
+			{
+				if (!m_incAdmin.OpString.DetectSql(query.ToArray()))
+				{
+					g_newstype mod = new g_newstype();
+					mod.nt_id = int.Parse(nt_id);
+					if (m_incAdmin.DelNewsType(mod))
+					{
+						result.Add("success", SysError.GetErrorString("DEL000"));
+					}
+					else
+					{
+						result.Add("error", SysError.GetErrorString("DEL001"));
+					}
+				}
+				else
+				{
+					result.Add("error", SysError.GetErrorString("SYS001"));
+				}
+			}
+			else
+			{
+				result.Add("error", SysError.GetErrorString("SYS002"));
+			}
+
+			return new JsonResult(result.ToString());
+		}
+
 	}
 }

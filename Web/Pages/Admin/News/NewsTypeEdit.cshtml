@@ -77,7 +77,8 @@
 			},
 			post: {
 				nt_pid: null,
-				nt_examine: true
+				nt_examine: true,
+				nt_top: 0
 			},
 			newstypelist: project.newstypelist_to_treelist(@Html.Raw(Model.m_newstypelist))
 		},
@@ -134,13 +135,14 @@
 						else
 						{
 							static.confrim(json.success, [{
-								title: "返回列表",
-								fct: function ()
-								{
-									location.href = "newstypelist";
-								}
+								title: "继续" + (!vm.filter.nt_id ? "添加" : "修改")
 							}, {
-								title: "继续添加"
+								title: "返回列表",
+								handler: function ()
+								{
+									history.go(-1);
+								},
+								class: "btn-primary"
 							}]);
 						}
 						static.loading("hide")
