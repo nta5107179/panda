@@ -342,9 +342,9 @@ Vue.prototype.dateformat = function (date, format)
 }
 
 //日期过滤器
-/*Vue.filter('date', function (value)
+Vue.filter("date", function (value, format)
 {
-    if (!value) return ''
+    if (!value) return ""
     value = value.toString()
-    return value.charAt(0).toUpperCase() + value.slice(1)
-})*/
+    return moment(value).format(format);
+})
