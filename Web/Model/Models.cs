@@ -37,7 +37,7 @@ namespace Model
         /// <summary>
         /// 
         /// </summary>
-        public g_news g_group
+        public g_news g_news
         {
             set { _g_news = value; }
             get { return _g_news; }

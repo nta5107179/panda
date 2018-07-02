@@ -1,0 +1,187 @@
+﻿@page
+@model NewsEditModel
+@{
+	Layout = "~/Pages/Admin/_Layout.cshtml";
+}
+<div class="row _content" id="app">
+	<div class="col-xs-12" id="variable_area">
+		<div class="row _form">
+			<div class="col-xs-12 _list">
+				<div class="_box">
+					<form class="form-horizontal">
+						<div class="col-xs-12">
+							<div class="form-group form-group-sm">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">类型</label>
+								<div class="col-md-5 col-sm-7 col-xs-9">
+									<select-tree v-model="post.nt_id" v-bind:list="newstypelist"></select-tree>
+								</div>
+								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+							</div>
+						</div>
+						<div class="col-xs-12">
+							<div class="form-group form-group-sm">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">标题</label>
+								<div class="col-md-5 col-sm-7 col-xs-9">
+									<input type="text" class="form-control" v-model="post.n_title" placeholder="请输入标题">
+								</div>
+								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+							</div>
+						</div>
+						<div class="col-xs-12">
+							<div class="form-group form-group-sm">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">内容</label>
+								<div class="col-md-5 col-sm-7 col-xs-9">
+									<textarea rows="10" class="form-control" v-model="post.n_content" placeholder="请输入内容"></textarea>
+								</div>
+								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+							</div>
+						</div>
+						<div class="col-xs-12">
+							<div class="form-group form-group-sm">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">文件</label>
+								<div class="col-md-5 col-sm-7 col-xs-9">
+									<input type="file" name="file1" placeholder="请选择文件">
+									<img v-if="post.n_filename" v-bind:src="'@(Config.g_root+Config.g_filepath)news/'+dateformat(post.n_addtime,'YYYY-MM-DD')+'/img/'+post.n_filename" class="img-thumbnail" style="margin-top:15px; height:150px;" />
+								</div>
+								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+							</div>
+						</div>
+						<div class="col-xs-12">
+							<div class="form-group form-group-sm">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">Url</label>
+								<div class="col-md-5 col-sm-7 col-xs-9">
+									<input type="text" class="form-control" v-model="post.n_url" placeholder="请输入Url">
+								</div>
+								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+							</div>
+						</div>
+						<div class="col-xs-12">
+							<div class="form-group form-group-sm">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">排序</label>
+								<div class="col-md-5 col-sm-7 col-xs-9">
+									<input type="text" class="form-control" v-model="post.n_top" placeholder="越大越靠前">
+								</div>
+								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+							</div>
+						</div>
+						<div class="col-xs-12">
+							<div class="form-group form-group-sm">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">审核</label>
+								<div class="col-md-5 col-sm-7 col-xs-9">
+									<label class="radio-inline">
+										<input type="radio" v-model="post.n_examine" value="true"> 是
+									</label>
+									<label class="radio-inline">
+										<input type="radio" v-model="post.n_examine" value="false"> 否
+									</label>
+								</div>
+								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="col-xs-12 _buts">
+				<div class="col-xs-12 text-right">
+					<button type="button" class="btn btn-primary btn-sm" v-on:click="save">提交按钮</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<modal-loading></modal-loading>
+	<modal-alert></modal-alert>
+	<modal-confrim></modal-confrim>
+</div>
+
+<script>
+	const router = new VueRouter()
+	var vm = new Vue({
+		router: router,
+		el: '#app',
+		data: {
+			filter: {
+				nt_id: 0
+			},
+			post: {
+				nt_id: null,
+				n_examine: true,
+				n_top: 0
+			},
+			newstypelist: project.newstypelist_to_treelist(@Html.Raw(Model.m_newstypelist))
+		},
+		created: function ()
+		{
+			this.pageLoad();
+		},
+		methods: {
+			pageLoad: function ()
+			{
+				//首次载入，通过url更新filter
+				if (!static.isEmptyJson(this.$route.query))
+				{
+					this.filter = static.CopyJson(this.$route.query);
+				}
+				content_header.title = "信息" + (!this.filter.n_id?"添加":"修改");
+				if (!this.filter.n_id)
+					return;
+				//读取数据
+				static.loading("show");
+				$.ajax({
+					type: "post",
+					url: "?handler=GetNews",
+					data: this.filter,
+					success: function (res)
+					{
+						var json = eval("(" + res + ")");
+						if (json.error)
+						{
+							static.alert(json.error);
+						}
+						else
+						{
+							vm.post = json.detial.g_news;
+						}
+						static.loading("hide")
+					}
+				});
+			},
+			save: function ()
+			{
+				static.loading("show");
+				$.ajax({
+					type: "post",
+					url: "?handler=SaveNews",
+					data: this.post,
+					fileData: {
+						file1: $("input[name=file1]")[0].files[0]
+					},
+					success: function (res)
+					{
+						var json = eval("(" + res + ")");
+						if (json.error)
+						{
+							static.alert(json.error);
+						}
+						else
+						{
+							static.confrim(json.success, [{
+								title: "继续" + (!vm.filter.n_id ? "添加" : "修改")
+							}, {
+								title: "返回列表",
+								handler: function ()
+								{
+									history.go(-1);
+								},
+								class: "btn-primary"
+							}]);
+						}
+						static.loading("hide")
+					}
+				});
+			}
+		}
+	});
+
+
+</script>

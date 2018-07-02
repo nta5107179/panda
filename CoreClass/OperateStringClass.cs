@@ -104,6 +104,8 @@ namespace CoreClass
         /// <returns>处理后字符串</returns>
         public string Escape(string str)
         {
+			if (str == null)
+				return null;
             try
             {
                 foreach (string key in m_escapeDic.Keys)
@@ -122,7 +124,7 @@ namespace CoreClass
         /// <returns>处理后字符串</returns>
         public string Escape(object s)
         {
-            string str = "";
+            string str = null;
             try
             {
                 str = s.ToString();
@@ -141,8 +143,10 @@ namespace CoreClass
         /// <param name="str">需要反转意的字符串</param>
         /// <returns>处理后字符串</returns>
         public string unEscape(string str)
-        {
-            try
+		{
+			if (str == null)
+				return null;
+			try
             {
                 //str = HttpContext.Current.Server.HtmlDecode(str);
                 foreach (string key in m_escapeDic.Keys)
@@ -160,7 +164,7 @@ namespace CoreClass
         /// <returns>处理后字符串</returns>
         public string unEscape(object s)
         {
-            string str = "";
+            string str = null;
             try
             {
                 str = s.ToString();

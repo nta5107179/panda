@@ -19,6 +19,11 @@ namespace Web.Pages.Admin.News
 
 		public void OnGet()
         {
+			if (!m_incAdmin.IsLogin)
+			{
+				m_incAdmin.RedirectAdmin();
+			}
+
 			List<Models> list = m_incAdmin.GetNewsTypeList();
 			m_newstypelist = WebUtility.UrlDecode(m_incAdmin.OpString.ToJsonArray(list.ToList<object>()).ToString());
 		}
@@ -58,8 +63,9 @@ namespace Web.Pages.Admin.News
 			string nt_id = Request.Form["nt_id"];
 			string nt_name = Request.Form["nt_name"];
 			string nt_pid = Request.Form["nt_pid"];
+			string nt_top = Request.Form["nt_top"];
 			string nt_examine = Request.Form["nt_examine"];
-			List<string> query = new List<string>() { nt_name, nt_pid, nt_examine };
+			List<string> query = new List<string>() { nt_name, nt_pid, nt_top, nt_examine };
 
 			if (!m_incAdmin.OpString.DecideNull(query.ToArray()))
 			{
@@ -71,6 +77,7 @@ namespace Web.Pages.Admin.News
 						g_newstype mod = new g_newstype();
 						mod.nt_name = nt_name;
 						mod.nt_pid = int.Parse(nt_pid);
+						mod.nt_top = int.Parse(nt_top);
 						mod.nt_examine = bool.Parse(nt_examine);
 						if (m_incAdmin.AddNewsType(mod))
 						{
@@ -88,6 +95,7 @@ namespace Web.Pages.Admin.News
 						g_newstype mod2 = new g_newstype();
 						mod2.nt_name = nt_name;
 						mod2.nt_pid = int.Parse(nt_pid);
+						mod2.nt_top = int.Parse(nt_top);
 						mod2.nt_examine = bool.Parse(nt_examine);
 						if (m_incAdmin.EditNewsType(mod, mod2))
 						{

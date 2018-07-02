@@ -8,17 +8,6 @@ var static = {
     {
         return Math.floor(Math.random() * (max - min + 1) + min);
     },
-    //将json转换成url参数
-    toQuery: function (json)
-    {
-        var arr = [];
-        for (var key in json)
-        {
-            if (json[key] != null)
-                arr.push(key + "=" + json[key]);
-        }
-        return arr.join("&");
-    },
     isEmptyJson:function (e) {
         var t;
         for (t in e)
@@ -117,10 +106,28 @@ var project = {
 var g_ajax = $.ajax;
 $.ajax = function (json)
 {
+    var form = new FormData();
+    for (key in json.data)
+    {
+        if (json.data[key] != null)
+            form.append(key, json.data[key]);
+    }
+    form.append("__RequestVerificationToken", $("input[name=__RequestVerificationToken]").val());
+    if (json.fileData != null)
+    {
+        for (key in json.fileData)
+        {
+            if (json.fileData[key] != null)
+                form.append(key, json.fileData[key]);
+        }
+    }
+
     g_ajax({
         type: json.type,
         url: json.url,
-        data: static.toQuery(json.data) + "&__RequestVerificationToken=" + $("input[name=__RequestVerificationToken]").val(),
+        data: form,
+        processData: false,
+        contentType: false,
         success: json.success,
         error: json.error
     });
@@ -328,3 +335,16 @@ Vue.component("modal-confrim", {
         '</div>' +
         ''
 })
+
+Vue.prototype.dateformat = function (date, format)
+{
+    return moment(date).format(format);
+}
+
+//日期过滤器
+/*Vue.filter('date', function (value)
+{
+    if (!value) return ''
+    value = value.toString()
+    return value.charAt(0).toUpperCase() + value.slice(1)
+})*/

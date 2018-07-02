@@ -1,0 +1,194 @@
+﻿@page
+@model NewsListModel
+@{
+	Layout = "~/Pages/Admin/_Layout.cshtml";
+}
+<div class="row _content" id="app">
+	<div class="col-xs-12">
+		<div class="row _search">
+			<form class="form-horizontal">
+				<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+					<div class="form-group form-group-sm">
+						<label for="firstname" class="col-sm-4 col-xs-3 control-label">标题</label>
+						<div class="col-sm-8 col-xs-9">
+							<input type="text" class="form-control" v-model="filter.n_title" placeholder="请输入标题">
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+					<div class="form-group form-group-sm">
+						<label for="firstname" class="col-sm-4 col-xs-3 control-label">类型</label>
+						<div class="col-sm-8 col-xs-9">
+							<select-tree v-model="filter.nt_id" v-bind:list="newstypelist"></select-tree>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+					<div class="form-group form-group-sm">
+						<label for="firstname" class="col-sm-4 col-xs-3 control-label">审核</label>
+						<div class="col-sm-8 col-xs-9">
+							<select class="form-control" v-model="filter.n_examine">
+								<option v-bind:value="null">--请选择--</option>
+								<option v-bind:value="true">是</option>
+								<option v-bind:value="false">否</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12 text-right">
+					<div class="form-group">
+						<div class="col-xs-12">
+							<button type="button" class="btn btn-success btn-sm" v-on:click="add">添加按钮</button>
+							<button type="button" class="btn btn-primary btn-sm" v-on:click="search">搜索按钮</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="col-xs-12" id="variable_area">
+		<div class="row _tablelist">
+			<div class="col-xs-12 _list">
+				<div class="_box">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th style="width:60px;">编号</th>
+								<th style="width:auto;">标题</th>
+								<th style="width:150px;">类型</th>
+								<th style="width:60px;">排序</th>
+								<th style="width:60px;">审核</th>
+								<th style="width:120px;">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="el in list">
+								<td>{{el.g_news.n_id}}</td>
+								<td>{{el.g_news.n_title}}</td>
+								<td>{{el.g_newstype.nt_name}}</td>
+								<td>{{el.g_news.n_top}}</td>
+								<td>{{el.g_news.n_examine?"是":"否"}}</td>
+								<td>
+									<a v-bind:href="'newsedit#/?n_id=' + el.g_news.n_id">修改</a> |
+									<a href="javascript:void(0);" v-on:click="del(el.g_news.n_id)">删除</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<table-pages v-bind:action="filter" v-bind:total="total" v-on:pagechange="search"></table-pages>
+		</div>
+	</div>
+
+	<modal-loading></modal-loading>
+	<modal-alert></modal-alert>
+	<modal-confrim></modal-confrim>
+</div>
+
+<script>
+	const router = new VueRouter()
+	var vm = new Vue({
+		router: router,
+		el: '#app',
+		data: {
+			filter: {
+				page: 1,
+				limit: 20,
+				n_examine: null,
+				nt_id:null
+			},
+			list: [],
+			total: 0,
+			newstypelist: project.newstypelist_to_treelist(@Html.Raw(Model.m_newstypelist))
+		},
+		created: function ()
+		{
+			this.pageLoad();
+		},
+		watch: {
+			$route: "pageLoad"
+		},
+		methods: {
+			pageLoad: function (to, from)
+			{
+				//首次载入，通过url更新filter
+				if (!static.isEmptyJson(this.$route.query))
+				{
+					this.filter = static.CopyJson(this.$route.query);
+				}
+				content_header.title = "信息列表"
+				//读取数据
+				static.loading("show");
+				$.ajax({
+					type: "post",
+					url: "?handler=GetNewsList",
+					data: this.filter,
+					success: function (res)
+					{
+						var json = eval("(" + res + ")");
+						if (json.error)
+						{
+							static.alert(json.error);
+						}
+						else
+						{
+							vm.list = json.list;
+							vm.total = json.total;
+						}
+						static.loading("hide")
+					}
+				});
+			},
+			search: function ()
+			{
+				router.push({ query: this.filter })
+			},
+			add: function ()
+			{
+				location.href = "newsedit";
+			},
+			del: function (id)
+			{
+				var del_handler = function ()
+				{
+					static.loading("show");
+					$.ajax({
+						type: "post",
+						url: "?handler=DelNews",
+						data: { n_id: id },
+						success: function (res)
+						{
+							var json = eval("(" + res + ")");
+							if (json.error)
+							{
+								static.alert(json.error);
+							}
+							else
+							{
+								static.alert(json.success, function ()
+								{
+									vm.pageLoad();
+								});
+							}
+							static.loading("hide")
+						}
+					});
+				}
+
+				static.confrim("确定要删除该项吗？", [{
+					title: "取消"
+				}, {
+					title: "确定",
+					handler: function ()
+					{
+						del_handler();
+					},
+					class: "btn-primary"
+				}]);
+			}
+		}
+	});
+
+
+</script>

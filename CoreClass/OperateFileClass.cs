@@ -71,7 +71,7 @@ namespace CoreClass
                 throw new Exception("上传文件格式被禁止。");
             }
             string filePath = "";
-            string newFileName = "";
+            string newFileName = null;
             try
             {
                 newFileName = g_FileSaveName + fileExt;

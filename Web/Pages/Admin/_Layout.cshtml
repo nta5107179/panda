@@ -33,6 +33,8 @@
 	<script src="@(Config.g_adminroot)JS/bootstrap/js/bootstrap.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="@(Config.g_adminroot)JS/AdminLTE/js/adminlte.min.js"></script>
+	<!-- 引入 moment.js -->
+	<script src="@(Config.g_adminroot)JS/moment.js"></script>
 	<!-- 引入 Vue.js -->
 	<script src="@(Config.g_adminroot)JS/vue.js"></script>
 	<script src="@(Config.g_adminroot)JS/vue-router.js"></script>
@@ -44,7 +46,7 @@
 <div class="wrapper">
 	<header class="main-header" id="main-header">
 		<!-- Logo -->
-		<a href="index2.html" class="logo hidden-xs">
+		<a href="@(Config.g_adminroot)" class="logo hidden-xs">
 			<!-- mini logo for sidebar mini 50x50 pixels -->
 			<span class="logo-mini"><b>P</b>A</span>
 			<!-- logo for regular state and mobile devices -->
@@ -128,14 +130,14 @@
 			</h1>
 			<ol class="breadcrumb">
 				<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-				<li class="active">@ViewData["Title"]</li>
+				<li class="active">{{title}}</li>
 			</ol>
 		</section>
 		<script>
 			var content_header = new Vue({
 				el: "#content-header",
 				data: {
-					title:"功能模块"
+					title:"首页"
 				}
 			});
 		</script>
