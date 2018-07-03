@@ -22,7 +22,7 @@ public static class SysError
 			dic.Add("ERROR001", "系统错误！");
 			//非法字符
 			dic.Add("SYS000", "传入数据正常");
-			dic.Add("SYS001", "系统检测到非法字符，请使用全角字符代替，以下字符为非法字符 " + Config.g_illegal.Replace("'", "\\'").Replace("|", " "));
+			dic.Add("SYS001", "系统检测到非法字符，请使用全角字符代替，以下字符为非法字符 " + string.Join(" ", Config.g_illegal));
 			dic.Add("SYS002", "参数错误，请按照要求输入！");
 			//上传图片
 			dic.Add("IMG000", "图片上传成功！");

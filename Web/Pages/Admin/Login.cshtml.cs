@@ -29,7 +29,7 @@ namespace Web.Pages.Admin
 			if (!m_incAdmin.OpString.DecideNull(query.ToArray()))
 			{
 				query.Add(isremember);
-				if (!m_incAdmin.OpString.DetectSql(query.ToArray()))
+				if (!m_incAdmin.OpString.DetectSql(query.ToArray(), Config.g_illegal))
 				{
 					if (m_incAdmin.Login(a_uname, a_pwd, string.IsNullOrEmpty(isremember)? false : bool.Parse(isremember)))
 					{

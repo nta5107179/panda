@@ -50,7 +50,7 @@ public static class Config
 	/// <summary>
 	/// 非法字符
 	/// </summary>
-	public static string g_illegal = ",|\"|'";
+	public static string[] g_illegal = GetWebconfig("g_illegal").Split('|');
 	/// <summary>
 	/// 敏感字符
 	/// </summary>

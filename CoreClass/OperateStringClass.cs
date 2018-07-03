@@ -544,7 +544,7 @@ namespace CoreClass
 		public bool DetectSql(string[] strarr, string[] arr = null)
         {
             bool b = false;
-            arr = arr!=null ? arr : new string[] { ",", ";", "\"", "'" };
+            arr = arr!=null ? arr : new string[] { ",", "\"", "'" };
 
             for (int i = 0; i < strarr.Length; i++)
             {

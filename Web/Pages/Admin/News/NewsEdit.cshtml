@@ -31,7 +31,7 @@
 							<div class="form-group form-group-sm">
 								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">内容</label>
 								<div class="col-md-5 col-sm-7 col-xs-9">
-									<textarea rows="10" class="form-control" v-model="post.n_content" placeholder="请输入内容"></textarea>
+									<textarea rows="10" id="n_content" v-model="post.n_content"></textarea>
 								</div>
 								<div class="col-md-6 col-sm-3 hidden-xs"></div>
 							</div>
@@ -114,6 +114,10 @@
 		{
 			this.pageLoad();
 		},
+		mounted: function ()
+		{
+			this.ckeditorLoad();
+		},
 		methods: {
 			pageLoad: function ()
 			{
@@ -144,6 +148,14 @@
 						}
 						static.loading("hide")
 					}
+				});
+			},
+			ckeditorLoad: function ()
+			{
+				var ckeditor = CKEDITOR.replace('n_content');
+				ckeditor.on('change', function (event)
+				{
+					vm.post.n_content = this.getData();
 				});
 			},
 			save: function ()
@@ -182,6 +194,5 @@
 			}
 		}
 	});
-
 
 </script>

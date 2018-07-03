@@ -42,7 +42,7 @@ namespace Web.Pages.Admin.News
 			if (!m_incAdmin.OpString.DecideNull(query.ToArray()))
 			{
 				query.AddRange(new string[] { nt_name, nt_pid, nt_examine });
-				if (!m_incAdmin.OpString.DetectSql(query.ToArray()))
+				if (!m_incAdmin.OpString.DetectSql(query.ToArray(), Config.g_illegal))
 				{
 					long total = 0;
 					List<Models> list = m_incAdmin.GetNewsTypeList(page, limit, ref total, nt_name, nt_pid, nt_examine);
@@ -72,7 +72,7 @@ namespace Web.Pages.Admin.News
 
 			if (!m_incAdmin.OpString.DecideNull(query.ToArray()))
 			{
-				if (!m_incAdmin.OpString.DetectSql(query.ToArray()))
+				if (!m_incAdmin.OpString.DetectSql(query.ToArray(), Config.g_illegal))
 				{
 					g_newstype mod = new g_newstype();
 					mod.nt_id = int.Parse(nt_id);

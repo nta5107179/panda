@@ -37,7 +37,7 @@ namespace Web.Pages.Admin.News
 
 			if (!m_incAdmin.OpString.DecideNull(query.ToArray()))
 			{
-				if (!m_incAdmin.OpString.DetectSql(query.ToArray()))
+				if (!m_incAdmin.OpString.DetectSql(query.ToArray(), Config.g_illegal))
 				{
 					Models detial = m_incAdmin.GetNewsType(nt_id);
 
@@ -70,7 +70,7 @@ namespace Web.Pages.Admin.News
 			if (!m_incAdmin.OpString.DecideNull(query.ToArray()))
 			{
 				query.AddRange(new string[] { nt_id });
-				if (!m_incAdmin.OpString.DetectSql(query.ToArray()))
+				if (!m_incAdmin.OpString.DetectSql(query.ToArray(), Config.g_illegal))
 				{
 					if (string.IsNullOrEmpty(nt_id))
 					{

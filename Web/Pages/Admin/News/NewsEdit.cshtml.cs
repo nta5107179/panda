@@ -38,9 +38,10 @@ namespace Web.Pages.Admin.News
 
 			if (!m_incAdmin.OpString.DecideNull(query.ToArray()))
 			{
-				if (!m_incAdmin.OpString.DetectSql(query.ToArray()))
+				if (!m_incAdmin.OpString.DetectSql(query.ToArray(), Config.g_illegal))
 				{
 					Models detial = m_incAdmin.GetNews(n_id);
+					detial.g_news.n_content = m_incAdmin.OpString.unEscape(detial.g_news.n_content);
 
 					result.Add("detial", m_incAdmin.OpString.ToJson(detial));
 				}
@@ -75,7 +76,7 @@ namespace Web.Pages.Admin.News
 			if (!m_incAdmin.OpString.DecideNull(query.ToArray()))
 			{
 				query.AddRange(new string[] { n_id, n_filename, n_url });
-				if (!m_incAdmin.OpString.DetectSql(query.ToArray()))
+				if (!m_incAdmin.OpString.DetectSql(query.ToArray(), Config.g_illegal))
 				{
 					DateTime n_addtime = (string)Request.Form["n_addtime"] == null ? DateTime.Now : DateTime.Parse(Request.Form["n_addtime"]);
 					string imgpath = string.Format("{0}News/{1}/img/", Config.g_filepath, n_addtime.ToString("yyyy-MM-dd"));
