@@ -33,7 +33,7 @@
 								<div class="col-md-9 col-sm-10 col-xs-9">
 									<div class="row">
 										<div class="col-xs-12" v-if="!isPC()">
-											<button type="button" class="btn btn-primary btn-sm">移动编辑器</button>
+											<button type="button" class="btn btn-primary btn-sm" v-on:click="mobileEditorOpen">内容编辑器</button>
 										</div>
 										<div class="col-xs-12" v-if="isPC()">
 											<textarea id="n_content" v-model="post.n_content"></textarea>
@@ -177,6 +177,10 @@
 					});
 				});
 				
+			},
+			mobileEditorOpen: function ()
+			{
+				window.open("editor");
 			},
 			save: function ()
 			{
