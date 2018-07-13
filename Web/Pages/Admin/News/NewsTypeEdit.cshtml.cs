@@ -39,9 +39,9 @@ namespace Web.Pages.Admin.News
 			{
 				if (!m_incAdmin.OpString.DetectSql(query.ToArray(), Config.g_illegal))
 				{
-					Models detial = m_incAdmin.GetNewsType(nt_id);
+					Models detail = m_incAdmin.GetNewsType(nt_id);
 
-					result.Add("detial", m_incAdmin.OpString.ToJson(detial));
+					result.Add("detail", m_incAdmin.OpString.ToJson(detail));
 				}
 				else
 				{

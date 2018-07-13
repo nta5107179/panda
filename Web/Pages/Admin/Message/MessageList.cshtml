@@ -1,0 +1,141 @@
+﻿@page
+@model MessageListModel
+@{
+	Layout = "~/Pages/Admin/_Layout.cshtml";
+}
+<div class="row _content" id="app">
+	<div class="col-xs-12" id="variable_area">
+		<div class="row _tablelist">
+			<div class="col-xs-12 _list">
+				<div class="_box">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th style="width:60px;">编号</th>
+								<th style="width:auto;">内容</th>
+								<th style="width:60px;">状态</th>
+								<th style="width:120px;">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="el in list">
+								<td>{{el.g_message.m_id}}</td>
+								<td>{{el.g_message.m_content}}</td>
+								<td v-bind:class="{red:!el.g_message.m_isread}">{{el.g_message.m_isread?"已读":"未读"}}</td>
+								<td>
+									<a v-bind:href="'messagedetail#/?m_id=' + el.g_message.m_id">查看</a> |
+									<a href="javascript:void(0);" v-on:click="del(el.g_message.m_id)">删除</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<table-pages v-bind:action="filter" v-bind:total="total" v-on:pagechange="search"></table-pages>
+		</div>
+	</div>
+
+	<modal-loading></modal-loading>
+	<modal-alert></modal-alert>
+	<modal-confrim></modal-confrim>
+</div>
+
+<script>
+	const router = new VueRouter()
+	var vm = new Vue({
+		router: router,
+		el: '#app',
+		data: {
+			filter: {
+				page: 1,
+				limit: 20
+			},
+			list: [],
+			total: 0
+		},
+		created: function ()
+		{
+			this.pageLoad();
+		},
+		watch: {
+			$route: "pageLoad"
+		},
+		methods: {
+			pageLoad: function (to, from)
+			{
+				//首次载入，通过url更新filter
+				if (!static.isEmptyJson(this.$route.query))
+				{
+					this.filter = static.CopyJson(this.$route.query);
+				}
+				content_header.title = "留言列表"
+				//读取数据
+				static.loading("show");
+				$.ajax({
+					type: "post",
+					url: "?handler=GetMessageList",
+					data: this.filter,
+					success: function (res)
+					{
+						var json = eval("(" + res + ")");
+						if (json.error)
+						{
+							static.alert(json.error);
+						}
+						else
+						{
+							vm.list = json.list;
+							vm.total = json.total;
+						}
+						static.loading("hide")
+					}
+				});
+			},
+			search: function ()
+			{
+				router.push({ query: this.filter })
+			},
+			del: function (id)
+			{
+				var del_handler = function ()
+				{
+					static.loading("show");
+					$.ajax({
+						type: "post",
+						url: "?handler=DelMessage",
+						data: { m_id: id },
+						success: function (res)
+						{
+							var json = eval("(" + res + ")");
+							if (json.error)
+							{
+								static.alert(json.error);
+							}
+							else
+							{
+								static.alert(json.success, function ()
+								{
+									vm.pageLoad();
+								});
+							}
+							static.loading("hide")
+						}
+					});
+				}
+
+				static.confrim("确定要删除该项吗？", [{
+					title: "取消"
+				}, {
+					title: "确定",
+					handler: function ()
+					{
+						del_handler();
+					},
+					class: "btn-primary"
+				}]);
+			}
+		}
+	});
+
+
+</script>

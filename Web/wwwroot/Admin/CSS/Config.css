@@ -14,17 +14,18 @@
 /*内容区域*/
 ._content{padding:0; margin:0;}
 
-/*表格列表*/
+/*列表*/
 ._tablelist{padding-bottom:60px; height:100%; padding-top:15px; background-color:#fff; border-top:3px solid #3c8dbc; border-radius:3px;}
 	._tablelist ._list{height:100%;}
 		._tablelist ._list ._box{height:100%; width:100%; overflow:auto;}
 			._tablelist ._list ._box table{margin:0; max-width:none;}
 			._tablelist ._list ._box table thead > tr > th,
 			._tablelist ._list ._box table tbody > tr > td{white-space: nowrap;}
+			._tablelist ._list ._box .red{color:#ff0000;}
 	._tablelist ._pages{margin-top:15px; padding:0;}
 		._tablelist ._pages ul{margin:0;}
 
-/*查找*/
+/*列表搜索*/
 ._search{margin-bottom:15px; background-color:#fff; border-top:3px solid #dd4b39; border-radius:3px; padding-top:15px; max-height:108px; overflow:auto;}
 
 /*表单*/

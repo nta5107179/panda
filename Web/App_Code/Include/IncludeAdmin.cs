@@ -11,22 +11,21 @@ namespace Web.App_Code.Include
 {
     public class IncludeAdmin : AppCode
 	{
-		Factory m_factory = new Factory();
 		GetModelList m_gml = new GetModelList();
-
-		/*
+        
+        /*
 		===========================================
 		全局Cookie
 		===========================================
 		*/
-		#region 全局Cookie
-		/// <summary>
-		/// 添加管理员登录Cookie
-		/// </summary>
-		/// <param name="s_id">管理员流水号</param>
-		/// <param name="s_name">管理员用户名</param>
-		/// <param name="isremember">是否记住</param>
-		bool CreateCookie_Login(string a_id, string a_uname, bool isremember)
+        #region 全局Cookie
+        /// <summary>
+        /// 添加管理员登录Cookie
+        /// </summary>
+        /// <param name="s_id">管理员流水号</param>
+        /// <param name="s_name">管理员用户名</param>
+        /// <param name="isremember">是否记住</param>
+        bool CreateCookie_Login(string a_id, string a_uname, bool isremember)
 		{
 			bool b = true;
 			b = isremember? OpMemory.SetCookie("a_id", a_id, 365, 0, 0, 0, null): OpMemory.SetCookie("a_id", a_id, null);
@@ -216,7 +215,7 @@ select CAST(FOUND_ROWS() as SIGNED) as total;
 		/// <returns></returns>
 		public Models GetNewsType(string nt_id)
 		{
-			Models detial = new Models();
+			Models detail = new Models();
 			DataSet ds = null;
 			OpSql.Open();
 			try
@@ -231,13 +230,13 @@ where nt_id={0}
 					List<g_newstype> list1 = m_gml.g_newstype(ds.Tables[0]);
 					if(list1.Count > 0)
 					{
-						detial.g_newstype = list1[0];
+						detail.g_newstype = list1[0];
 					}
 				}
 			}
 			catch { }
 			finally { OpSql.Close(); }
-			return detial;
+			return detail;
 		}
 		/// <summary>
 		/// 添加信息类型
@@ -382,7 +381,7 @@ select CAST(FOUND_ROWS() as SIGNED) as total;
 		/// <returns></returns>
 		public Models GetNews(string n_id)
 		{
-			Models detial = new Models();
+			Models detail = new Models();
 			DataSet ds = null;
 			OpSql.Open();
 			try
@@ -397,13 +396,13 @@ where n_id={0}
 					List<g_news> list1 = m_gml.g_news(ds.Tables[0]);
 					if (list1.Count > 0)
 					{
-						detial.g_news = list1[0];
+						detail.g_news = list1[0];
 					}
 				}
 			}
 			catch { }
 			finally { OpSql.Close(); }
-			return detial;
+			return detail;
 		}
 		/// <summary>
 		/// 添加信息
@@ -453,6 +452,108 @@ where n_id={0}
 			finally { OpSql.Close(); }
 			return b;
 		}
-		#endregion
-	}
+        #endregion
+        /*
+		===========================================
+		信息模块
+		===========================================
+		*/
+        #region 信息模块
+        /// <summary>
+        /// 获取信息列表
+        /// </summary>
+        /// <returns></returns>
+        public List<Models> GetMessageList(string page, string limit, ref long total)
+        {
+            List<Models> list = new List<Models>();
+            DataSet ds = null;
+            OpSql.Open();
+            try
+            {
+                string sql = string.Format(@"
+select SQL_CALC_FOUND_ROWS * from g_message
+order by m_isread asc, m_id desc
+limit {0},{1};
+select CAST(FOUND_ROWS() as SIGNED) as total;
+                    ", (int.Parse(page) - 1) * int.Parse(limit), int.Parse(limit));
+                ds = OpSql.Select(sql);
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    List<g_message> list1 = m_gml.g_message(ds.Tables[0]);
+                    for (int i = 0; i < list1.Count; i++)
+                    {
+                        Models mod = new Models();
+                        mod.g_message = list1[i];
+                        list.Add(mod);
+                    }
+                    total = (long)ds.Tables[1].Rows[0]["total"];
+                }
+            }
+            catch { }
+            finally { OpSql.Close(); }
+            return list;
+        }
+        /// <summary>
+        /// 获取信息
+        /// </summary>
+        /// <returns></returns>
+        public Models GetMessage(string m_id)
+        {
+            Models detail = new Models();
+            DataSet ds = null;
+            OpSql.Open();
+            try
+            {
+                string sql = string.Format(@"
+select * from g_message
+where m_id={0}
+                    ", m_id);
+                ds = OpSql.Select(sql);
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    List<g_message> list1 = m_gml.g_message(ds.Tables[0]);
+                    if (list1.Count > 0)
+                    {
+                        detail.g_message = list1[0];
+                    }
+                }
+            }
+            catch { }
+            finally { OpSql.Close(); }
+            return detail;
+        }
+        /// <summary>
+        /// 修改信息
+        /// </summary>
+        /// <returns></returns>
+        public bool EditMessage(g_message mod, g_message mod2)
+        {
+            bool b = false;
+            OpSql.Open();
+            try
+            {
+                b = OpSql.Update(new object[] { mod }, new object[] { mod2 });
+            }
+            catch { }
+            finally { OpSql.Close(); }
+            return b;
+        }
+        /// <summary>
+        /// 删除信息
+        /// </summary>
+        /// <returns></returns>
+        public bool DelMessage(g_message mod)
+        {
+            bool b = false;
+            OpSql.Open();
+            try
+            {
+                b = OpSql.Delete(new object[] { mod });
+            }
+            catch { }
+            finally { OpSql.Close(); }
+            return b;
+        }
+        #endregion
+    }
 }

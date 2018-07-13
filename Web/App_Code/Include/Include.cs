@@ -9,17 +9,19 @@ using Model;
 namespace Web.App_Code.Include
 {
     public class Include : AppCode
-	{
-		/*
+    {
+        GetModelList m_gml = new GetModelList();
+
+        /*
         ===========================================
         留言
         ===========================================
         */
-		/// <summary>
-		/// 添加留言
-		/// </summary>
-		/// <param name="mod">mod</param>
-		public bool AddMessage(g_message mod)
+        /// <summary>
+        /// 添加留言
+        /// </summary>
+        /// <param name="mod">mod</param>
+        public bool AddMessage(g_message mod)
 		{
 			bool b = false;
 			OpSql.Open();

@@ -67,7 +67,7 @@
 								<td>{{el.g_news.n_title}}</td>
 								<td>{{el.g_newstype.nt_name}}</td>
 								<td>{{el.g_news.n_top}}</td>
-								<td>{{el.g_news.n_examine?"是":"否"}}</td>
+								<td v-bind:class="{red:!el.g_news.n_examine}">{{el.g_news.n_examine?"是":"否"}}</td>
 								<td>
 									<a v-bind:href="'newsedit#/?n_id=' + el.g_news.n_id">修改</a> |
 									<a href="javascript:void(0);" v-on:click="del(el.g_news.n_id)">删除</a>

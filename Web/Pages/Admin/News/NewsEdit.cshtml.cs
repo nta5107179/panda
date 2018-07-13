@@ -40,10 +40,10 @@ namespace Web.Pages.Admin.News
 			{
 				if (!m_incAdmin.OpString.DetectSql(query.ToArray(), Config.g_illegal))
 				{
-					Models detial = m_incAdmin.GetNews(n_id);
-					detial.g_news.n_content = m_incAdmin.OpString.unEscape(detial.g_news.n_content);
+					Models detail = m_incAdmin.GetNews(n_id);
+					detail.g_news.n_content = m_incAdmin.OpString.unEscape(detail.g_news.n_content);
 
-					result.Add("detial", m_incAdmin.OpString.ToJson(detial));
+					result.Add("detail", m_incAdmin.OpString.ToJson(detail));
 				}
 				else
 				{

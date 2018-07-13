@@ -1,5 +1,5 @@
 ﻿@page
-@model NewsTypeEditModel
+@model MessageEditModel
 @{
 	Layout = "~/Pages/Admin/_Layout.cshtml";
 }
@@ -11,43 +11,52 @@
 					<form class="form-horizontal">
 						<div class="col-xs-12">
 							<div class="form-group form-group-sm">
-								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">名称</label>
-								<div class="col-md-5 col-sm-7 col-xs-9">
-									<input type="text" class="form-control" v-model="post.nt_name" placeholder="请输入名称">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">姓名</label>
+								<div class="col-md-9 col-sm-10 col-xs-9">
+									{{post.m_name}}
 								</div>
-								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+								<div class="col-md-2 hidden-sm hidden-xs"></div>
 							</div>
 						</div>
 						<div class="col-xs-12">
 							<div class="form-group form-group-sm">
-								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">父类型</label>
-								<div class="col-md-5 col-sm-7 col-xs-9">
-									<select-tree v-model="post.nt_pid" v-bind:list="newstypelist"></select-tree>
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">邮箱</label>
+								<div class="col-md-9 col-sm-10 col-xs-9">
+									{{post.m_email}}
 								</div>
-								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+								<div class="col-md-2 hidden-sm hidden-xs"></div>
 							</div>
 						</div>
 						<div class="col-xs-12">
 							<div class="form-group form-group-sm">
-								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">排序</label>
-								<div class="col-md-5 col-sm-7 col-xs-9">
-									<input type="text" class="form-control" v-model="post.nt_top" placeholder="越大越靠前">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">内容</label>
+								<div class="col-md-9 col-sm-10 col-xs-9">
+									{{post.m_content}}
 								</div>
-								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+								<div class="col-md-2 hidden-sm hidden-xs"></div>
 							</div>
 						</div>
 						<div class="col-xs-12">
 							<div class="form-group form-group-sm">
-								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">审核</label>
-								<div class="col-md-5 col-sm-7 col-xs-9">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">IP</label>
+								<div class="col-md-9 col-sm-10 col-xs-9">
+									{{post.m_ip}}
+								</div>
+								<div class="col-md-2 hidden-sm hidden-xs"></div>
+							</div>
+						</div>
+						<div class="col-xs-12">
+							<div class="form-group form-group-sm">
+								<label for="firstname" class="col-md-1 col-sm-2 col-xs-3 control-label">状态</label>
+								<div class="col-md-9 col-sm-10 col-xs-9">
 									<label class="radio-inline">
-										<input type="radio" v-model="post.nt_examine" value="true"> 是
+										<input type="radio" v-model="post.m_isread" value="true"> 已读
 									</label>
 									<label class="radio-inline">
-										<input type="radio" v-model="post.nt_examine" value="false"> 否
+										<input type="radio" v-model="post.m_isread" value="false"> 未读
 									</label>
 								</div>
-								<div class="col-md-6 col-sm-3 hidden-xs"></div>
+								<div class="col-md-2 hidden-sm hidden-xs"></div>
 							</div>
 						</div>
 					</form>
@@ -75,11 +84,8 @@
 			filter: {
 			},
 			post: {
-				nt_pid: null,
-				nt_examine: true,
-				nt_top: 0
-			},
-			newstypelist: project.newstypelist_to_treelist(@Html.Raw(Model.m_newstypelist))
+				m_isread: true
+			}
 		},
 		created: function ()
 		{
@@ -93,14 +99,14 @@
 				{
 					this.filter = static.CopyJson(this.$route.query);
 				}
-				content_header.title = "分类" + (!this.filter.nt_id?"添加":"修改");
-				if (!this.filter.nt_id)
+				content_header.title = "留言详情";
+				if (!this.filter.m_id)
 					return;
 				//读取数据
 				static.loading("show");
 				$.ajax({
 					type: "post",
-					url: "?handler=GetNewsType",
+					url: "?handler=GetMessage",
 					data: this.filter,
 					success: function (res)
 					{
@@ -111,18 +117,22 @@
 						}
 						else
 						{
-							vm.post = json.detail.g_newstype;
+							vm.post = json.detail.g_message;
 						}
 						static.loading("hide")
 					}
 				});
+			},
+			mobileEditorOpen: function ()
+			{
+				window.open("editor");
 			},
 			save: function ()
 			{
 				static.loading("show");
 				$.ajax({
 					type: "post",
-					url: "?handler=SaveNewsType",
+					url: "?handler=SaveMessage",
 					data: this.post,
 					success: function (res)
 					{
@@ -134,7 +144,7 @@
 						else
 						{
 							static.confrim(json.success, [{
-								title: "继续" + (!vm.filter.nt_id ? "添加" : "修改")
+								title: "确定"
 							}, {
 								title: "返回列表",
 								handler: function ()
@@ -150,6 +160,5 @@
 			}
 		}
 	});
-
 
 </script>
