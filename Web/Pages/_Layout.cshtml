@@ -28,52 +28,43 @@
 	<!-- 包括所有已编译的插件 -->
 	<script src="@(Config.g_root)JS/bootstrap/js/bootstrap.min.js"></script>
 
-	<!-- 引入 Vue.js -->
-	<script src="@(Config.g_root)JS/vue.js"></script>
-
 	<link href="@(Config.g_root)CSS/Config.css" rel="stylesheet" />
 	<script src="@(Config.g_root)JS/Config.js"></script>
 
 </head>
 <body>
 	<div class="_top">
-		<nav class="navbar navbar-inverse navbar-fixed-top _nav">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
+		<div class="row">
+			<nav class="navbar navbar-inverse _nav">
+				<div class="container">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+					</div>
+					<div class="navbar-collapse collapse">
+						<ul class="nav navbar-nav">
+							<li><a href="/index">首页</a></li>
+							<li><a href="/skillshare/index">技术分享</a></li>
+							<li><a href="#experience">个人经历</a></li>
+							<li><a href="#contact">留言</a></li>
+							<li><a href="/travelsmood/index">游记&心情</a></li>
+						</ul>
+					</div>
 				</div>
-				<div class="navbar-collapse collapse">
-					<ul class="nav navbar-nav">
-						<li><a href="/Index">首页</a></li>
-						<li><a href="/SkillShare">技术分享</a></li>
-						<li><a href="#Experience">个人经历</a></li>
-						<li><a href="#Contact">留言</a></li>
-						<li><a href="/TravelsMood">游记&心情</a></li>
-					</ul>
-				</div>
-			</div>
-		</nav>
-		<div class="row _bg">
-			<div class="col-xs-12">
-				<div class="col-md-4 col-sm-3 col-xs-2"></div>
-				<div class="col-md-4 col-sm-6 col-xs-8 _word"><img src="@(Config.g_root)Images/panda_word.png" /></div>
-				<div class="col-md-4 col-sm-3 col-xs-2"></div>
-			</div>
-			<div class="col-xs-12">
-				<div class="col-md-4 col-sm-3 col-xs-2"></div>
-				<div class="col-md-4 col-sm-6 col-xs-8 _icon"><div><img src="@(Config.g_root)Images/icon.png" class="img-circle" /></div></div>
-				<div class="col-md-4 col-sm-3 col-xs-2"></div>
-			</div>
+			</nav>
 		</div>
 	</div>
 	<div class="_middle">
-		@Html.AntiForgeryToken();
-		@RenderBody()
+		<div class="row">
+			<div class="col-xs-12">
+				@Html.AntiForgeryToken()
+				@RenderBody()
+			</div>
+		</div>
 	</div>
 	<div class="_bottom">
 		<div class="container">
@@ -86,5 +77,26 @@
 			</div>
 		</div>
 	</div>
+	<script>
+		function layout_setBottom()
+		{
+			if ($("._top").outerHeight() + $("._middle").outerHeight() + $("._bottom").outerHeight() < $(window).height())
+			{
+				$("._bottom").addClass("fixed");
+			}
+			else
+			{
+				$("._bottom").removeClass("fixed");
+			}
+		}
+		$(window).resize(function ()
+		{
+			layout_setBottom();
+		});
+		$(function ()
+		{
+			layout_setBottom();
+		})
+	</script>
 </body>
 </html>

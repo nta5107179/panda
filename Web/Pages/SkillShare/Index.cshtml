@@ -1,0 +1,28 @@
+﻿@page
+@model IndexModel
+@{
+	ViewData["Title"] = Config.g_indextitle + "-技术分享";
+}
+
+<div id="app" class="_skillshare">
+	@Html.Partial("_Menu.cshtml")
+	<div class="container _list">
+		@for (int i = 0; i < Model.m_newslist.Count; i++)
+		{
+		<div class="panel panel-default">
+			<div class="panel-heading"><a href="show?nt_id=@Model.m_newslist[i].g_news.nt_id&n_id=@Model.m_newslist[i].g_news.n_id" class="text-muted" target="_blank">@Model.m_newslist[i].g_news.n_title</a></div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-sm-2 col-xs-6">
+						<img src="@(Config.g_root+Config.g_filepath)news/@(((DateTime)Model.m_newslist[i].g_news.n_addtime).ToString("yyyy-MM-dd"))/img/@Model.m_newslist[i].g_news.n_filename" class="img-thumbnail img-responsive">
+					</div>
+					<p class="col-sm-10 col-xs-6">
+						@Html.Raw(Model.m_inc.OpString.RemoveHtmlTags(Model.m_inc.OpString.unEscape(Model.m_newslist[i].g_news.n_content)))
+					</p>
+				</div>
+			</div>
+		</div>
+		}
+	</div>
+	@Html.Partial("../_Page.cshtml")
+</div>

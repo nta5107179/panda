@@ -7,7 +7,7 @@ using CoreClass;
 
 namespace Web.App_Code.Include
 {
-    public static class NotificationAdmin
+    public static class IncludeStaticAdmin
     {
         static OperateSqlClass m_sql = new OperateSqlClass();
         static GetModelList m_gml = new GetModelList();

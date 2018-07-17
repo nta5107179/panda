@@ -69,7 +69,7 @@
 								<td>{{el.g_news.n_top}}</td>
 								<td v-bind:class="{red:!el.g_news.n_examine}">{{el.g_news.n_examine?"是":"否"}}</td>
 								<td>
-									<a v-bind:href="'newsedit#/?n_id=' + el.g_news.n_id">修改</a> |
+									<a v-bind:href="'newsedit#/?nt_id='+el.g_news.nt_id+'&n_id=' + el.g_news.n_id">修改</a> |
 									<a href="javascript:void(0);" v-on:click="del(el.g_news.n_id)">删除</a>
 								</td>
 							</tr>
@@ -77,7 +77,7 @@
 					</table>
 				</div>
 			</div>
-			<table-pages v-bind:action="filter" v-bind:total="total" v-on:pagechange="search"></table-pages>
+			<list-pages v-bind:action="filter" v-bind:total="total" v-on:pagechange="search"></list-pages>
 		</div>
 	</div>
 

@@ -379,7 +379,7 @@ select CAST(FOUND_ROWS() as SIGNED) as total;
 		/// 获取信息
 		/// </summary>
 		/// <returns></returns>
-		public Models GetNews(string n_id)
+		public Models GetNews(string nt_id, string n_id)
 		{
 			Models detail = new Models();
 			DataSet ds = null;
@@ -388,8 +388,8 @@ select CAST(FOUND_ROWS() as SIGNED) as total;
 			{
 				string sql = string.Format(@"
 select * from g_news
-where n_id={0}
-                    ", n_id);
+where nt_id={0} and n_id={1}
+                    ", nt_id, n_id);
 				ds = OpSql.Select(sql);
 				if (ds != null && ds.Tables.Count > 0)
 				{
@@ -455,12 +455,12 @@ where n_id={0}
         #endregion
         /*
 		===========================================
-		信息模块
+		留言模块
 		===========================================
 		*/
-        #region 信息模块
+        #region 留言模块
         /// <summary>
-        /// 获取信息列表
+        /// 获取留言列表
         /// </summary>
         /// <returns></returns>
         public List<Models> GetMessageList(string page, string limit, ref long total)
@@ -494,7 +494,7 @@ select CAST(FOUND_ROWS() as SIGNED) as total;
             return list;
         }
         /// <summary>
-        /// 获取信息
+        /// 获取留言
         /// </summary>
         /// <returns></returns>
         public Models GetMessage(string m_id)
@@ -523,7 +523,7 @@ where m_id={0}
             return detail;
         }
         /// <summary>
-        /// 修改信息
+        /// 修改留言
         /// </summary>
         /// <returns></returns>
         public bool EditMessage(g_message mod, g_message mod2)
@@ -539,7 +539,7 @@ where m_id={0}
             return b;
         }
         /// <summary>
-        /// 删除信息
+        /// 删除留言
         /// </summary>
         /// <returns></returns>
         public bool DelMessage(g_message mod)

@@ -1,0 +1,55 @@
+﻿@{
+	string nt_id = Context.Request.Query["nt_id"];
+	List<Model.Models> m_newstypelist = Web.App_Code.Include.IncludeStatic.GetNewsTypeList("1");
+}
+
+<div class="container _menu" id="menu">
+	<div class="_box">
+		<ul class="nav nav-tabs">
+			@for (int i = 0; i < m_newstypelist.Count; i++)
+			{
+				<li class="@(nt_id == null && i == 0 ? "active" : m_newstypelist[i].g_newstype.nt_id.ToString() == nt_id ? "active" : "")">
+					<a href="?nt_id=@m_newstypelist[i].g_newstype.nt_id" class="text-muted">@m_newstypelist[i].g_newstype.nt_name</a>
+				</li>
+			}
+			<li class="dropdown" style="display:none;">
+				<a class="dropdown-toggle text-muted" data-toggle="dropdown" href="#">更多<span class="caret"></span></a>
+				<ul class="dropdown-menu">
+						
+				</ul>
+			</li>
+		</ul>
+	</div>
+</div>
+<script>
+	function menu_setMenu()
+	{
+		var all = $("#menu ._box .nav>li");
+		var looked = $("#menu ._box .nav>li:not(.dropdown)");
+		var more = $("#menu ._box .nav>li.dropdown");
+		var more_inside = $("#menu ._box .nav>li.dropdown .dropdown-menu");
+		var allWidth = 0;
+		for (var i = 0; i < all.length; i++)
+		{
+			allWidth += $(all[i]).outerWidth();
+		}
+		allWidth += more.outerWidth();
+		if ($("#menu").innerWidth() < allWidth)
+		{
+			var add = looked[looked.length-1];
+			more.show();
+			more_inside.prepend(add);
+			if (add.className == "active")
+				more.addClass("active");
+			menu_setMenu();
+		}
+	}
+	$(window).resize(function ()
+	{
+		menu_setMenu();
+	});
+	$(function ()
+	{
+		menu_setMenu();
+	})
+</script>

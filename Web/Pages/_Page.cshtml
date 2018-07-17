@@ -1,0 +1,37 @@
+﻿@{
+	Microsoft.AspNetCore.Http.IQueryCollection query = Context.Request.Query;
+
+	Model.Pagination m_page = (Model.Pagination)ViewData["page"];
+
+	List<string> filterList = new List<string>();
+	for (int i = 0; i < query.Count; i++)
+	{
+		string key = query.Keys.ToArray()[i];
+		if (key != "page")
+		{
+			filterList.Add(key + "=" + query[key]);
+		}
+	}
+	string filter = string.Join("&", filterList);
+}
+
+<div class="container text-right _page">
+	@if (m_page.total > 0)
+	{
+	<ul class="pagination">
+		<li class="@(m_page.page - 1 <= 0 ? "disabled" : "")"><a href="?@filter&page=@(m_page.page - 1 <= 0 ? m_page.page : m_page.page - 1)">&laquo;</a></li>
+		@for (int i = m_page.page - 2; i <= m_page.page + 2; i++)
+		{
+			if (i > 0 && i <= Math.Ceiling(Convert.ToDouble(m_page.total) / m_page.limit))
+			{
+				<li class="@(i == m_page.page ? "active" : "")"><a href="?@filter&page=@i">@i</a></li>
+			}
+		}
+		<li class="@(m_page.page + 1 > Math.Ceiling(Convert.ToDouble(m_page.total / m_page.limit)) ? "disabled" : "")"><a href="?@filter&page=@(m_page.page + 1 > Math.Ceiling(Convert.ToDouble(m_page.total / m_page.limit)) ? m_page.page : m_page.page + 1)">&raquo;</a></li>
+	</ul>
+	}
+	else
+	{
+	<span>no more data at this time</span>
+	}
+</div>

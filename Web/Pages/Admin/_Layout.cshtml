@@ -1,5 +1,5 @@
 ﻿@{
-	long m_messagenumber = Web.App_Code.Include.NotificationAdmin.MessageNumber;
+	long m_messagenumber = Web.App_Code.Include.IncludeStaticAdmin.MessageNumber;
 }
 
 <!DOCTYPE html>
@@ -158,13 +158,13 @@
 				//设置内容区域自适应
 				$(window).resize(function ()
 				{
-					setAppAdaptive();
+					layout_setAppAdaptive();
 				});
 				$(window).load(function ()
 				{
-					setAppAdaptive();
+					layout_setAppAdaptive();
 				});
-				function setAppAdaptive()
+				function layout_setAppAdaptive()
 				{
 					//alert($("#content-wrapper").innerHeight())
 					$("#variable_area").css("height", $(window).height() - 50 - $("#content-header").outerHeight() - 30 - $("#variable_area").prevAll().outerHeight())

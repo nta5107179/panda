@@ -33,6 +33,7 @@ namespace Web.Pages.Admin.News
 		{
 			JObject result = new JObject();
 
+			string nt_id = Request.Form["nt_id"];
 			string n_id = Request.Form["n_id"];
 			List<string> query = new List<string>() { n_id };
 
@@ -40,7 +41,7 @@ namespace Web.Pages.Admin.News
 			{
 				if (!m_incAdmin.OpString.DetectSql(query.ToArray(), Config.g_illegal))
 				{
-					Models detail = m_incAdmin.GetNews(n_id);
+					Models detail = m_incAdmin.GetNews(nt_id, n_id);
 					detail.g_news.n_content = m_incAdmin.OpString.unEscape(detail.g_news.n_content);
 
 					result.Add("detail", m_incAdmin.OpString.ToJson(detail));

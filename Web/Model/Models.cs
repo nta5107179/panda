@@ -7,7 +7,7 @@ namespace Model
 	/// 实体集合
 	/// </summary>
 	[Serializable]
-	public class Models : Object
+	public class Models
 	{
 		public Models()
 		{ }

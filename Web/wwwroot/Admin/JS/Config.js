@@ -163,7 +163,7 @@ $.ajax = function (json)
 }
 
 //分页插件
-Vue.component("table-pages", {
+Vue.component("list-pages", {
     props: {
         action: Object,
         total: Number,

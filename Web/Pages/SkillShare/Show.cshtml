@@ -1,0 +1,18 @@
+﻿@page
+@model ShowModel
+@{
+	ViewData["Title"] = Config.g_indextitle + "-技术分享-" + Model.m_newsdetail.g_news.n_title;
+}
+
+<div id="app" class="_skillshare">
+	<div class="container _show">
+		<div class="page-header">
+			<h3>
+				@Model.m_newsdetail.g_news.n_title
+			</h3>
+		</div>
+		<p>
+			@Html.Raw(Model.m_inc.OpString.unEscape(Model.m_newsdetail.g_news.n_content))
+		</p>
+	</div>
+</div>
