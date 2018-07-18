@@ -112,17 +112,29 @@
 			post: {
 				nt_id: null,
 				n_examine: true,
-				n_top: 0
+				n_top: 0,
+				n_content: null
 			},
-			newstypelist: project.newstypelist_to_treelist(@Html.Raw(Model.m_newstypelist))
+			newstypelist: project.newstypelist_to_treelist(@Html.Raw(Model.m_newstypelist)),
+			kindeditor: null
 		},
 		created: function ()
 		{
 			this.pageLoad();
 		},
-		mounted: function ()
+		watch:
 		{
-			this.editorLoad();
+			"post.n_content": function ()
+			{
+				if (this.kindeditor != null)
+				{
+					this.kindeditor.html(this.post.n_content);
+				}
+				else
+				{
+					this.editorLoad();
+				}
+			}
 		},
 		methods: {
 			pageLoad: function ()
@@ -158,22 +170,18 @@
 			},
 			editorLoad: function ()
 			{
-				var kindeditor = null;
-				KindEditor.ready(function (K)
-				{
-					kindeditor = K.create('#n_content', {
-						themeType: 'simple',
-						width: "100%",
-						height: 200,
-						uploadJson: '@(Config.g_adminroot)JS/kindeditor/asp.net/upload_json.ashx',
-						fileManagerJson: '@(Config.g_adminroot)JS/kindeditor/asp.net/file_manager_json.ashx',
-						allowFileManager: true,
-						filterMode: false,
-						afterChange: function ()
-						{
-							vm.post.n_content = this.html();
-						}
-					});
+				this.kindeditor = KindEditor.create('#n_content', {
+					themeType: 'simple',
+					width: "100%",
+					height: 200,
+					uploadJson: '@(Config.g_adminroot)JS/kindeditor/upload_json',
+					fileManagerJson: '@(Config.g_adminroot)JS/kindeditor/file_manager_json',
+					allowFileManager: true,
+					filterMode: false,
+					afterChange: function ()
+					{
+						vm.post.n_content = this.html();
+					}
 				});
 				
 			},

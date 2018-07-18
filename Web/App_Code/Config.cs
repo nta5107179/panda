@@ -64,6 +64,14 @@ public static class Config
 	/// </summary>
     public static string g_filetype = GetWebconfig("g_filetype");
 	/// <summary>
+	/// 允许上传flash类型
+	/// </summary>
+    public static string g_flashtype = GetWebconfig("g_flashtype");
+	/// <summary>
+	/// 允许上传media类型
+	/// </summary>
+    public static string g_mediatype = GetWebconfig("g_mediatype");
+	/// <summary>
 	/// 允许上传图片最大大小(单位 B)
 	/// </summary>
     public static int g_imgmax = int.Parse(GetWebconfig("g_imgmax"));
@@ -71,14 +79,22 @@ public static class Config
 	/// 允许上传文件最大大小(单位 B)
 	/// </summary>
     public static int g_filemax = int.Parse(GetWebconfig("g_filemax"));
+    /// <summary>
+    /// 允许上传flash最大大小(单位 B)
+    /// </summary>
+    public static int g_flashmax = int.Parse(GetWebconfig("g_flashmax"));
+    /// <summary>
+    /// 允许上传media最大大小(单位 B)
+    /// </summary>
+    public static int g_mediamax = int.Parse(GetWebconfig("g_mediamax"));
 
-	#endregion
+    #endregion
 
-	#region 读取appsettings.json配置
-	/// <summary>
-	/// 获取web.config文件appSettings配置节中的Add里的value属性
-	/// </summary>
-	public static string GetWebconfig(string key)
+    #region 读取appsettings.json配置
+    /// <summary>
+    /// 获取web.config文件appSettings配置节中的Add里的value属性
+    /// </summary>
+    public static string GetWebconfig(string key)
 	{
 		IConfigurationBuilder builder = new ConfigurationBuilder()
 					.SetBasePath(Directory.GetCurrentDirectory())
