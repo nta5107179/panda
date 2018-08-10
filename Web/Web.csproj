@@ -17,10 +17,6 @@
     <None Remove="Properties\PublishProfiles\FolderProfile.pubxml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Pages\Admin\JS\file_manager_json.ashx" />
-    <Content Include="Pages\Admin\JS\upload_json.ashx" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
   </ItemGroup>
   <ItemGroup>
